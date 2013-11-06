@@ -3,3 +3,5 @@
 *.log
 *.pot
 local_settings.py
+fabdefs.py
+server/static
