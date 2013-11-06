@@ -56,6 +56,8 @@ DATABASES = {
 
 
 ########## GENERAL CONFIGURATION
+ALLOWED_HOSTS = []
+
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#time-zone
 TIME_ZONE = 'Africa/Johannesburg'
 
@@ -161,7 +163,7 @@ MIDDLEWARE_CLASSES = (
 
 ########## URL CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
-ROOT_URLCONF = '%s.urls' % SITE_NAME
+ROOT_URLCONF = 'iec.urls'
 ########## END URL CONFIGURATION
 
 

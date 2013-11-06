@@ -5,6 +5,7 @@ import os
 elections_url = "http://www.elections.org.za/content/uploadedfiles/2009%20NPE.zip"
 elections_file = "2009 NPE.csv"
 os.environ["DJANGO_SETTINGS_MODULE"] = "iec.local"
+project_root = "server"
 
 def download_data():
     local("mkdir -p data")
@@ -17,4 +18,6 @@ def download_data():
 
 def setup_db():
     download_data()
-    local("python manage.py loaddata 'data/{}'".format(elections_file))
+    with lcd(project_root):
+        local("python manage.py syncdb")
+        local("python manage.py loaddata '../data/{}'".format(elections_file))

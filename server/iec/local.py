@@ -34,7 +34,6 @@ DATABASES = {
 }
 ########## END DATABASE CONFIGURATION
 
-
 ########## CACHE CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#caches
 CACHES = {

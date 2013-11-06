@@ -10,3 +10,4 @@ Installation
     cd elections-api
     fab setup_db
     pip install -r requirements.txt # best to run this in a virtualenv 
+    fab setup_db

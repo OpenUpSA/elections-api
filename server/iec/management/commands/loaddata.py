@@ -31,7 +31,7 @@ class Command(BaseCommand):
         with transaction.commit_on_success():
             header = reader.next()
             for row in reader:
-                if row_count > 100:
+                if row_count > 5000:
                     print "Commit"
                     transaction.commit()
                     row_count = 0
