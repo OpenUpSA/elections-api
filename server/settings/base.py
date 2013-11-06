@@ -1,15 +1,16 @@
 """Common settings and globals."""
 
-from os.path import abspath, basename, dirname, join, normpath
+from os.path import abspath, basename, dirname, join, normpath, realpath
 from sys import path
 
 
 ########## PATH CONFIGURATION
 # Absolute filesystem path to the Django project directory:
-DJANGO_ROOT = dirname(dirname(abspath(__file__)))
+DJANGO_ROOT = dirname(realpath(__name__))
 
 # Absolute filesystem path to the top-level project folder:
-SITE_ROOT = dirname(DJANGO_ROOT)
+#SITE_ROOT = dirname(DJANGO_ROOT)
+SITE_ROOT = DJANGO_ROOT
 
 # Site name:
 SITE_NAME = basename(DJANGO_ROOT)
