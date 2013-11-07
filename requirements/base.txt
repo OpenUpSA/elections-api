@@ -3,3 +3,4 @@ argparse==1.2.1
 django-filter==0.7
 djangorestframework==2.3.8
 wsgiref==0.1.2
+-e git+https://github.com/jdunck/python-unicodecsv.git@c5d8ae68758dd48d8a776214080caa88bc036644#egg=unicodecsv-master
