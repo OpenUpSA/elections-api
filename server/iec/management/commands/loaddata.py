@@ -1,7 +1,8 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from iec import models
-import csv
+import codecs
+import unicodecsv as csv
 import sys
 
 def clean(val):
@@ -27,14 +28,15 @@ class Command(BaseCommand):
         row_count = 0
         if len(args) < 1:
             raise CommandError("Expected an input file")
-        reader = csv.reader(open(args[0]))
+        fp = open(args[0])
+        reader = csv.reader(fp, encoding="latin1")
         with transaction.commit_on_success():
             header = reader.next()
             for row in reader:
-                if row_count > 5000:
-                    print "Commit"
+                if row_count % 100 == 0:
+                    sys.stdout.write("\r%d" % row_count)
+                    sys.stdout.flush()
                     transaction.commit()
-                    row_count = 0
                 row_count += 1
 
 
@@ -75,3 +77,4 @@ class Command(BaseCommand):
                 result = models.Result.objects.create(event=event, voting_district=voting_district, party=party) 
                 result.votes = party_votes
                 result.save()
+        print ""
