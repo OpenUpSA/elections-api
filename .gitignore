@@ -6,3 +6,4 @@ local_settings.py
 fabdefs.py
 server/static
 local.py
+production.py
