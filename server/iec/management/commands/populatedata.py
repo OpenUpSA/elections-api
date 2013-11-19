@@ -113,7 +113,7 @@ class Command(BaseCommand):
             header = reader.next()
             for row in reader:
                 try:
-                    if row_count % 10000 == 0:
+                    if row_count % 1000 == 0:
                         sys.stdout.write("\r%d" % row_count)
                         sys.stdout.flush()
                         transaction.commit()
