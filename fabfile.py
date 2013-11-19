@@ -22,9 +22,9 @@ def download_data():
         local("sed -e :a -e N -e '1,9 s/\\n/ /' -e ta '{}' > out".format(elections_file))
         local("mv out '{}'".format(elections_file))
 
-def loaddata():
+def populate():
     with lcd(code_root):
-        local("python manage.py loaddata '../data/{}' --traceback".format(elections_file))
+        local("python manage.py populatedata '../data/{}' --traceback".format(elections_file))
 
 def setup_db():
     download_data()
