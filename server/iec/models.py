@@ -10,7 +10,7 @@ class Province(models.Model):
     name = models.CharField(max_length=20)
 
 class Municipality(models.Model):
-    name = models.CharField(max_length=40)
+    name = models.CharField(max_length=100)
     province = models.ForeignKey(Province)
 
 class Ward(models.Model):
