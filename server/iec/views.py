@@ -46,12 +46,39 @@ class WardViewSet(viewsets.ModelViewSet):
     queryset = models.Ward.objects.all()
     serializer_class = serializers.WardSerializer
 
+    def get_queryset(self):
+        queryset = models.Ward.objects.all()
+        province = self.request.QUERY_PARAMS.get('province', None)
+        municipality = self.request.QUERY_PARAMS.get('municipality', None)
+
+        if province is not None:
+            queryset = queryset.filter(municipality__province__name__iexact=province).distinct()
+        if municipality is not None:
+            queryset = queryset.filter(municipality__id=municipality)
+
+        return queryset
+
 class VotingDistrictViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows a voting district to be viewed or edited.
     """
     queryset = models.VotingDistrict.objects.all()
     serializer_class = serializers.VotingDistrictSerializer
+
+    def get_queryset(self):
+        queryset = models.VotingDistrict.objects.all()
+        province = self.request.QUERY_PARAMS.get('province', None)
+        municipality = self.request.QUERY_PARAMS.get('municipality', None)
+        ward = self.request.QUERY_PARAMS.get('ward', None)
+
+        if province is not None:
+            queryset = queryset.filter(ward__municipality__province__name__iexact=province).distinct()
+        if municipality is not None:
+            queryset = queryset.filter(ward__municipality__id=municipality)
+        if ward is not None:
+            queryset = queryset.filter(ward__code=ward)
+
+        return queryset
 
 class ResultViewSet(viewsets.ModelViewSet):
     """

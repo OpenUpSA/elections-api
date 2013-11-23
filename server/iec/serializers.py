@@ -19,7 +19,7 @@ class ProvinceSerializer(serializers.HyperlinkedModelSerializer):
 class MunicipalitySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Municipality
-        fields = ('name', 'province')
+        fields = ('id', 'name', 'province')
 
 class WardSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
