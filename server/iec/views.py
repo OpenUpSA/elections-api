@@ -36,7 +36,7 @@ class MunicipalityViewSet(viewsets.ModelViewSet):
         province = self.request.QUERY_PARAMS.get('province', None)
 
         if province is not None:
-            queryset = queryset.filter(province__=province)
+            queryset = queryset.filter(province__name__iexact=province)
         return queryset
 
 class WardViewSet(viewsets.ModelViewSet):
