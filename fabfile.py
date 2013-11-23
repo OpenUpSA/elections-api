@@ -35,11 +35,12 @@ def setup_db():
         loaddata()
 
 def deploy():
+    #local("git push origin master")
     with api.cd(code_dir):
         api.run("git pull origin master")
         api.run("%s install -r %s/requirements/production.txt --quiet" % (pip, code_dir))
 
-        with api.cd(os.path.join(code_dir, project_root)):
+        with api.cd(code_dir + "/server"):
             api.run("%s manage.py collectstatic --noinput --settings=settings.production" % python)
 
         api.sudo("supervisorctl restart iec")
