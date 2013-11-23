@@ -28,8 +28,16 @@ class MunicipalityViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows a municipality to be viewed or edited.
     """
-    queryset = models.Municipality.objects.all()
     serializer_class = serializers.MunicipalitySerializer
+    queryset = models.Municipality.objects.all()
+
+    def get_queryset(self):
+        queryset = models.Municipality.objects.all()
+        province = self.request.QUERY_PARAMS.get('province', None)
+
+        if province is not None:
+            queryset = queryset.filter(province__=province)
+        return queryset
 
 class WardViewSet(viewsets.ModelViewSet):
     """
