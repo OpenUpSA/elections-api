@@ -38,13 +38,13 @@ class IEC(object):
     def resultsummaries(self, **kwargs):
         return self._paginate("result_summaries", kwargs)
 
-#iec = IEC("http://iec.code4sa.org")
-iec = IEC("http://localhost:8000")
-#print list(iec.parties())
-#print list(iec.events())
-#print list(iec.provinces())
-#print list(iec.municipalities(province="Gauteng"))
-#print list(iec.wards(province="Gauteng"))
-#print list(iec.voting_districts(ward="41602001"))
-#print list(iec.results(ward="41602001"))
-print list(iec.resultsummaries(ward="41602001"))
+if __name__ == "__main__":
+    iec = IEC("http://iec.code4sa.org")
+    #print list(iec.parties())
+    #print list(iec.events())
+    #print list(iec.provinces())
+    #print list(iec.municipalities(province="Gauteng"))
+    #print list(iec.wards(province="Gauteng"))
+    #print list(iec.voting_districts(ward="41602001"))
+    #print list(iec.results(ward="41602001"))
+    print list(iec.resultsummaries(ward="41602001"))
