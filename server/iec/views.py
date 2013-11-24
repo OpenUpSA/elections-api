@@ -131,5 +131,5 @@ class ResultSummaryViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(voting_district__ward__municipality__pk=municipality)
 
         if province is not None:
-            queryset = queryset.filter(voting_district__ward__municipality__province__pk=province)
+            queryset = queryset.filter(voting_district__ward__municipality__province__name__iexact=province)
         return queryset
