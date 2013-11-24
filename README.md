@@ -17,16 +17,32 @@ API
 
 You can find a rudimentary API at [http://iec.code4sa.org](http://iec.code4sa.org). You can find example api calls on the home page. In addition, Results and ResultSummaries can be filtered by geographical location e.g.
 
-    http://localhost:8000/results/?voting_district=10590006
-    http://localhost:8000/results/?ward=21001001
-    http://localhost:8000/results/?municipality=1
-    http://localhost:8000/results/?province=1
+    http://iec.code4sa.org/results/?voting_district=10590006
+    http://iec.code4sa.org/results/?ward=21001001
+    http://iec.code4sa.org/results/?municipality=1
+    http://iec.code4sa.org/results/?province=Gauteng
 
-and similarly
+and similarly:
         
 
-    http://localhost:8000/result_summaries/?voting_district=10590006
-    http://localhost:8000/result_summaries/?ward=21001001
-    http://localhost:8000/result_summaries/?municipality=1
-    http://localhost:8000/result_summaries/?province=1
+    http://iec.code4sa.org/result_summaries/?voting_district=10590006
+    http://iec.code4sa.org/result_summaries/?ward=21001001
+    http://iec.code4sa.org/result_summaries/?municipality=1
+    http://iec.code4sa.org/result_summaries/?province=Western%20Cape
 
+more advanced filtering is also available such as:
+
+    http://iec.code4sa.org/results/?province=Western%20Cape&min_votes=1000
+
+The available filter fields for ```/results``` are:
+    votes, max_votes, min_votes,
+    party, voting_district, ward, municipality, province
+
+The available filter fields for ```/resultsummaries``` are:
+    total_votes, max_total_votes, min_total_votes,
+    spoilt_votes, max_spoilt_votes, min_spoilt_votes,
+    registered_voters, max_registered_voters, min_registered_voters,
+    special_votes, max_special_votes, min_special_votes,
+    voter_turnout_perc, max_voter_turnout_perc, min_voter_turnout_perc,
+    section_24a_votes, max_section_24a_votes, min_section_24a_votes,
+    voting_district, ward, municipality, province
