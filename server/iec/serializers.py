@@ -40,6 +40,19 @@ class ResultSerializer(serializers.HyperlinkedModelSerializer):
         model = models.Result
         fields = ('event', 'voting_district', 'party', 'votes')
 
+class ResultVoteSerializer(serializers.HyperlinkedModelSerializer):
+    party = PartySerializer()
+    class Meta:
+        model = models.Result
+        fields = ('party', 'votes')
+
+class ResultVotesSerializer(serializers.HyperlinkedModelSerializer):
+    votes = ResultVoteSerializer(source="result_set")
+
+    class Meta:
+        model = models.VotingDistrict
+
+
 class ResultSummarySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.ResultSummary

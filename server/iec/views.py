@@ -46,24 +46,26 @@ class WardViewSet(viewsets.ReadOnlyModelViewSet):
 
         return queryset
 
+class VotingDistrictFilter(django_filters.FilterSet):
+    ward = django_filters.CharFilter(name="ward__code")
+    municipality = django_filters.CharFilter(name="ward__municipality__pk")
+    province = django_filters.CharFilter(name="ward__municipality__province__name", lookup_type="iexact")
+
+    class Meta:
+        model = models.VotingDistrict
+        fields = [
+            'ward', 'municipality', 'province'
+        ]
+
 class VotingDistrictViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.VotingDistrict.objects.all()
     serializer_class = serializers.VotingDistrictSerializer
+    filter_class = VotingDistrictFilter
 
-    def get_queryset(self):
-        queryset = models.VotingDistrict.objects.all()
-        province = self.request.QUERY_PARAMS.get('province', None)
-        municipality = self.request.QUERY_PARAMS.get('municipality', None)
-        ward = self.request.QUERY_PARAMS.get('ward', None)
-
-        if province is not None:
-            queryset = queryset.filter(ward__municipality__province__name__iexact=province).distinct()
-        if municipality is not None:
-            queryset = queryset.filter(ward__municipality__id=municipality)
-        if ward is not None:
-            queryset = queryset.filter(ward__code=ward)
-
-        return queryset
+class ResultVotesViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = models.VotingDistrict.objects.all()
+    serializer_class = serializers.ResultVotesSerializer
+    filter_class = VotingDistrictFilter
 
 class ResultFilter(django_filters.FilterSet):
     voting_district = django_filters.CharFilter(name="voting_district__code")
@@ -87,7 +89,6 @@ class ResultViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Result.objects.all()
     serializer_class = serializers.ResultSerializer
     filter_class = ResultFilter
-
 
 class ResultSummaryFilter(django_filters.FilterSet):
     voting_district = django_filters.CharFilter(name="voting_district__code")
