@@ -9,7 +9,7 @@ class IEC(object):
         url = self.base_url + "/" + url
         while url:
             r = requests.get(url, params=params)
-            js =  r.json
+            js = r.json()
             for result in js["results"]:
                 yield result
             url = js["next"]
@@ -48,3 +48,6 @@ if __name__ == "__main__":
     #print list(iec.voting_districts(ward="41602001"))
     #print list(iec.results(ward="41602001"))
     print list(iec.resultsummaries(ward="41602001"))
+    #for summary in iec.resultsummaries(province="Gauteng"):
+    #    print summary["voting_district"], summary["voter_turnout_perc"]
+
