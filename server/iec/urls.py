@@ -17,7 +17,10 @@ router.register(r'voting_districts', views.VotingDistrictViewSet)
 router.register(r'parties', views.PartyViewSet)
 router.register(r'results', views.ResultViewSet)
 router.register(r'result_summaries', views.ResultSummaryViewSet)
-router.register(r'result_votes', views.ResultVotesViewSet)
+router.register(r'votes/by_voting_district', views.VotingDistrictVotesViewSet)
+router.register(r'votes/by_ward', views.WardVotesViewSet)
+router.register(r'votes/by_municipality', views.MunicipalityVotesViewSet)
+router.register(r'votes/by_province', views.ProvinceVotesViewSet)
 
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),

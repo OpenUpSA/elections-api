@@ -33,10 +33,24 @@ class VotingDistrictViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = serializers.VotingDistrictSerializer
     filter_class = filters.VotingDistrictFilter
 
-class ResultVotesViewSet(viewsets.ReadOnlyModelViewSet):
+class VotingDistrictVotesViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.VotingDistrict.objects.all()
-    serializer_class = serializers.ResultVotesSerializer
+    serializer_class = serializers.VotingDistrictVotesSerializer
     filter_class = filters.VotingDistrictFilter
+
+class WardVotesViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = models.Ward.objects.all()
+    serializer_class = serializers.WardVotesSerializer
+    filter_class = filters.WardFilter
+
+class MunicipalityVotesViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = models.Municipality.objects.all()
+    serializer_class = serializers.MunicipalityVotesSerializer
+    filter_class = filters.MunicipalityFilter
+
+class ProvinceVotesViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = models.Province.objects.all()
+    serializer_class = serializers.ProvinceVotesSerializer
 
 class ResultViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Result.objects.all()

@@ -4,32 +4,32 @@ from iec import models
 class PartySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Party
-        fields = ('name', )
+        fields = ("name", )
 
 class EventSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Event
-        fields = ('type', 'description')
+        fields = ("type", "description")
 
 class ProvinceSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Municipality
-        fields = ('name',)
+        fields = ("name",)
 
 class MunicipalitySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Municipality
-        fields = ('id', 'name', 'province')
+        fields = ("id", "name", "province")
 
 class WardSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Ward
-        fields = ('code', 'municipality')
+        fields = ("code", "municipality")
 
 class VotingDistrictSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.VotingDistrict
-        fields = ('code', 'ward')
+        fields = ("code", "ward")
 
 class ResultSerializer(serializers.HyperlinkedModelSerializer):
     event = EventSerializer()
@@ -38,20 +38,78 @@ class ResultSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = models.Result
-        fields = ('event', 'voting_district', 'party', 'votes')
+        fields = ("event", "voting_district", "party", "votes")
 
 class ResultVoteSerializer(serializers.HyperlinkedModelSerializer):
     party = PartySerializer()
     class Meta:
         model = models.Result
-        fields = ('party', 'votes')
+        fields = ("party", "votes")
 
-class ResultVotesSerializer(serializers.HyperlinkedModelSerializer):
+class VotingDistrictVotesSerializer(serializers.HyperlinkedModelSerializer):
     votes = ResultVoteSerializer(source="result_set")
 
     class Meta:
         model = models.VotingDistrict
 
+from django.db.models import Count, Sum
+
+class WardVoteField(serializers.Field):
+    def to_native(self, voting_districts):
+        vds = voting_districts\
+            .values("result__party__name")\
+            .annotate(num_votes=Sum("result__votes"))
+        
+        return [
+            { "party" : vd["result__party__name"], "votes" : vd["num_votes"]}
+            for vd in vds
+        ]
+
+class WardVotesSerializer(serializers.HyperlinkedModelSerializer):
+    votes = WardVoteField(source="votingdistrict_set")
+
+    class Meta:
+        model = models.Ward
+        fields = ("code", "municipality", "votes")
+
+class MunicipalityVoteField(serializers.Field):
+    def to_native(self, wards):
+        wds = wards\
+            .values("votingdistrict__result__party__name")\
+            .annotate(num_votes=Sum("votingdistrict__result__votes"))
+        
+        return [
+            { "party" : ward["votingdistrict__result__party__name"], "votes" : ward["num_votes"]}
+            for ward in wds
+        ]
+
+class MunicipalityVotesSerializer(serializers.HyperlinkedModelSerializer):
+    votes = MunicipalityVoteField(source="ward_set")
+
+    class Meta:
+        model = models.Municipality
+        fields = ("id", "name", "province", "votes")
+
+class ProvinceVoteField(serializers.Field):
+    def to_native(self, munics):
+        ms = munics\
+            .values("ward__votingdistrict__result__party__name")\
+            .annotate(num_votes=Sum("ward__votingdistrict__result__votes"))
+        
+        return [
+            {
+                "party" : m["ward__votingdistrict__result__party__name"],
+                "votes" : m["num_votes"]
+            }
+            for m in ms
+        ]
+
+class ProvinceVotesSerializer(serializers.HyperlinkedModelSerializer):
+    votes = ProvinceVoteField(source="municipality_set")
+
+    class Meta:
+        model = models.Municipality
+        fields = ("id", "name", "votes")
 
 class ResultSummarySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
