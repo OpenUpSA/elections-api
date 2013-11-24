@@ -35,10 +35,12 @@ more advanced filtering is also available such as:
     http://iec.code4sa.org/results/?province=Western%20Cape&min_votes=1000
 
 The available filter fields for ```/results``` are:
+
     votes, max_votes, min_votes,
     party, voting_district, ward, municipality, province
 
 The available filter fields for ```/resultsummaries``` are:
+
     total_votes, max_total_votes, min_total_votes,
     spoilt_votes, max_spoilt_votes, min_spoilt_votes,
     registered_voters, max_registered_voters, min_registered_voters,
