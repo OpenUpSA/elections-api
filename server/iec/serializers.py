@@ -56,13 +56,16 @@ from django.db.models import Count, Sum
 
 class WardVoteField(serializers.Field):
     def to_native(self, voting_districts):
-        vds = voting_districts\
-            .values("result__party__name")\
-            .annotate(num_votes=Sum("result__votes"))
+        # TODO - need to do this properly
+        national_event = 1
+        results = models.Result.objects.filter(
+            voting_district__in=voting_districts.all(), event=national_event)
+
+        results = results.values("party__name").annotate(num_votes=Sum("votes"))
         
         return [
-            { "party" : vd["result__party__name"], "votes" : vd["num_votes"]}
-            for vd in vds
+            { "party" : r["party__name"], "votes" : r["num_votes"]}
+            for r in results
         ]
 
 class WardVotesSerializer(serializers.HyperlinkedModelSerializer):
