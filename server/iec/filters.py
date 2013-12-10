@@ -3,19 +3,21 @@ import models
 
 class MunicipalityFilter(django_filters.FilterSet):
     province = django_filters.CharFilter(name="province__name", lookup_type="iexact")
+    municipality = django_filters.CharFilter(name="pk")
 
     class Meta:
         model = models.Municipality
-        fields = ['province']
+        fields = ["municipality", "province"]
 
 class WardFilter(django_filters.FilterSet):
     municipality = django_filters.CharFilter(name="municipality__pk")
     province = django_filters.CharFilter(name="municipality__province__name", lookup_type="iexact")
+    ward = django_filters.CharFilter(name="code")
 
     class Meta:
         model = models.Ward
         fields = [
-            'municipality', 'province'
+            "ward", "municipality", "province"
         ]
 
 
@@ -27,7 +29,7 @@ class VotingDistrictFilter(django_filters.FilterSet):
     class Meta:
         model = models.VotingDistrict
         fields = [
-            'ward', 'municipality', 'province'
+            "ward", "municipality", "province"
         ]
 
 class ResultFilter(django_filters.FilterSet):
@@ -43,9 +45,9 @@ class ResultFilter(django_filters.FilterSet):
     class Meta:
         model = models.Result
         fields = [
-            'votes', 'max_votes', 'min_votes',
-            'party',
-            'voting_district', 'ward', 'municipality', 'province'
+            "votes", "max_votes", "min_votes",
+            "party",
+            "voting_district", "ward", "municipality", "province"
         ]
 
 class ResultSummaryFilter(django_filters.FilterSet):
@@ -70,12 +72,12 @@ class ResultSummaryFilter(django_filters.FilterSet):
     class Meta:
         model = models.ResultSummary
         fields = [
-            'total_votes', 'max_total_votes', 'min_total_votes',
-            'spoilt_votes', 'max_spoilt_votes', 'min_spoilt_votes',
-            'registered_voters', 'max_registered_voters', 'min_registered_voters',
-            'special_votes', 'max_special_votes', 'min_special_votes',
-            'voter_turnout_perc', 'max_voter_turnout_perc', 'min_voter_turnout_perc',
-            'section_24a_votes', 'max_section_24a_votes', 'min_section_24a_votes',
-            'voting_district', 'ward', 'municipality', 'province'
+            "total_votes", "max_total_votes", "min_total_votes",
+            "spoilt_votes", "max_spoilt_votes", "min_spoilt_votes",
+            "registered_voters", "max_registered_voters", "min_registered_voters",
+            "special_votes", "max_special_votes", "min_special_votes",
+            "voter_turnout_perc", "max_voter_turnout_perc", "min_voter_turnout_perc",
+            "section_24a_votes", "max_section_24a_votes", "min_section_24a_votes",
+            "voting_district", "ward", "municipality", "province"
         ]
 
