@@ -9,3 +9,6 @@ local.py
 production.py
 
 .idea/
+env
+debug.log
+*/config_private.py
