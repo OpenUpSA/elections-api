@@ -12,3 +12,4 @@ production.py
 env
 debug.log
 */config_private.py
+fabdefs.py

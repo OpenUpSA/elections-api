@@ -1,4 +1,5 @@
 from __future__ import with_statement
+from fabdefs import *
 from fabric.api import *
 from contextlib import contextmanager
 
