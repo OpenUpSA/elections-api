@@ -7,3 +7,5 @@ fabdefs.py
 server/static
 local.py
 production.py
+
+.idea/
