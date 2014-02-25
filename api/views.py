@@ -5,6 +5,8 @@ import serializers
 import json
 import time
 
+HOST = app.config['HOST']
+
 event_types = ["provincial", "national"]
 years = [1999, 2004, 2009]
 areas = ["province", "municipality", "ward", "voting_district"]
@@ -74,7 +76,10 @@ def index_event_types():
     Landing page. Return links to available event_types.
     """
 
-    return make_response("OK 1")
+    out = {}
+    for event_type in event_types:
+        out[event_type] = HOST + "/" + event_type + "/"
+    return jsonify(out)
 
 
 @app.route('/<event_type>/')
@@ -84,7 +89,10 @@ def index_years(event_type):
     """
 
     event_type = validate_event_type(event_type)
-    return make_response("OK 2")
+    out = {}
+    for year in years:
+        out[year] = HOST + "/" + event_type + "/" + str(year) + "/"
+    return jsonify(out)
 
 
 @app.route('/<event_type>/<year>/')
@@ -95,7 +103,11 @@ def results_overall(event_type, year):
 
     event_type = validate_event_type(event_type)
     year = validate_year(year)
-    return make_response("OK 3")
+    out = {}
+    out['results'] = []  # the overall results
+    for area in areas:
+        out[area] = HOST + "/" + event_type + "/" + str(year) + "/" + area + "/"
+    return jsonify(out)
 
 
 @app.route('/<event_type>/<year>/<area>/')
