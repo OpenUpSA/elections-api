@@ -26,7 +26,7 @@ If the ward's ID is left out
     http://election-results.code4sa.org/national/2009/ward/
 
 then the API will respond with a list of all the known wards, which can be paged through.
-But for a quicker way of targeting a specific area's results we can include optional filter arguments. This can
+But for a quicker way of targeting a specific area's results, an optional filter argument can be included. This can
 narrow down the search to a province, municipality, or ward of interest, e.g.
 
     http://election-results.code4sa.org/national/2009/ward/?municipality=EC102
@@ -36,15 +36,18 @@ narrow down the search to a province, municipality, or ward of interest, e.g.
 When constructing API calls of the form shown above, the following values can be used:
 
     event_type:
+
         * national
         * provincial
 
     year:
+
         * 1999
         * 2004
         * 2009
 
     area:
+
         * province
         * municipality
         * ward
@@ -66,7 +69,8 @@ add the following optional query parameter:
 
     ?include_results=False
 
-TODO: add shapefiles
+TODO: add GeoJSON shapes where available
+
 TODO: filter by latitude & longitude, using a bounding box
 
 ## Contributing to the project
@@ -92,12 +96,14 @@ Run Flask dev server:
 
     python runserver.py
 
+TODO: add database population instructions
+
 ### Deploy instructions
 
-...
+TODO: add deploy instructions
 
 ### Maintenance
 
-...
+TODO: location of logs, how to restart service, etc.
 
 
