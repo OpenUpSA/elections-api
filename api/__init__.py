@@ -36,4 +36,4 @@ stream_handler.setLevel(LOG_LEVEL)
 stream_handler.setFormatter(file_formatter)
 logger.addHandler(stream_handler)
 
-import iec.views
+import api.views

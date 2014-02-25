@@ -1,4 +1,4 @@
-from iec import app
+from api import app
 
 if __name__ == "__main__":
     # run Flask dev-server
