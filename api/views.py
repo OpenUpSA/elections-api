@@ -116,7 +116,21 @@ def results_by_area(event_type, year, area):
     Return results for the specified area, with links to available parent areas where applicable.
     """
 
+    # validate endpoints
     event_type = validate_event_type(event_type)
     year = validate_year(year)
     area = validate_area(area)
+
+    # validate query parameters
+    filter_area = None
+    for tmp_area in reversed(areas):
+        if request.args.get(tmp_area):
+            filter_area = tmp_area
+            filter_id = int(request.args.get(tmp_area))
+
+            # throw an exception, if this is not a viable filter for the specified area
+            if areas.index(filter_area) >= areas.index(area):
+                raise ApiException(422, "The specified filter parameter cannot be used in this query.")
+            break
+            
     return make_response("OK 4")
