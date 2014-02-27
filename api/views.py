@@ -1,6 +1,6 @@
-from api import app, logger
+from api import app, logger, db
 from flask import jsonify, request, make_response, render_template, redirect
-import models
+from models import *
 import serializers
 import json
 import time
@@ -111,7 +111,8 @@ def results_overall(event_type, year):
 
 
 @app.route('/<event_type>/<year>/<area>/')
-def results_by_area(event_type, year, area):
+@app.route('/<event_type>/<year>/<area>/<area_id>/')
+def results_by_area(event_type, year, area, area_id=None):
     """
     Return results for the specified area, with links to available parent areas where applicable.
     """
@@ -132,5 +133,22 @@ def results_by_area(event_type, year, area):
             if areas.index(filter_area) >= areas.index(area):
                 raise ApiException(422, "The specified filter parameter cannot be used in this query.")
             break
-            
-    return make_response("OK 4")
+
+
+    models = {
+        "province": (Province, Province.province_id),
+        "municipality": (Municipality, Municipality.municipality_id),
+        "ward": (Ward, Ward.ward_id),
+        "voting_district": (VotingDistrict, VotingDistrict.voting_district_id)
+    }
+
+    if area_id:
+        out = models[area][0].query.filter(models[area][1] == area_id).first().as_dict()
+    else:
+        items = models[area][0].query.limit(20).all()
+        out = []
+        for item in items:
+            out.append(item.as_dict())
+    logger.debug(out)
+
+    return make_response(json.dumps(out))

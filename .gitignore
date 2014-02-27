@@ -13,3 +13,6 @@ env
 debug.log
 */config_private.py
 fabdefs.py
+
+election_results/
+*tmp.db

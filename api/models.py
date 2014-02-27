@@ -25,6 +25,9 @@ class VotingDistrict(db.Model):
         return "<VotingDistrict(pk='%s', year='%s', voting_district_id='%s')>" % (
             str(self.pk), str(self.year), str(self.voting_district_id))
 
+    def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 
 class Ward(db.Model):
 
@@ -47,6 +50,9 @@ class Ward(db.Model):
     def __repr__(self):
         return "<Ward(pk='%s', year='%s', ward_id='%s')>" % (
             str(self.pk), str(self.year), str(self.ward_id))
+
+    def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 class Municipality(db.Model):
@@ -71,6 +77,9 @@ class Municipality(db.Model):
         return "<Municipality(pk='%s', year='%s', municipality_id='%s')>" % (
             str(self.pk), str(self.year), str(self.municipality_id))
 
+    def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 
 class Province(db.Model):
 
@@ -89,3 +98,6 @@ class Province(db.Model):
     def __repr__(self):
         return "<Province(pk='%s', year='%s', province_id='%s')>" % (
             str(self.pk), str(self.year), str(self.province_id))
+
+    def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
