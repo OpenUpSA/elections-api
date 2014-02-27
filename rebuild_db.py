@@ -22,7 +22,7 @@ def read_data(filename):
     return headings, result_list
 
 
-def parse_data(result_list):
+def parse_data(result_list, event_desc):
     """
 
     """
@@ -56,7 +56,7 @@ def parse_data(result_list):
         section_24a_votes = int(section_24a_votes.replace(',', ''))
         num_registered = int(num_registered.replace(',', ''))
 
-        if electoral_event == '22 APR 2009 NATIONAL ELECTION':
+        if electoral_event == event_desc:
             if not data_dict.get(province):
                 data_dict[province] = {'results': {'meta': {}, 'vote_count': {}}, 'municipalities': {}}
             if not data_dict[province]['municipalities'].get(municipality):
@@ -118,10 +118,10 @@ def parse_data(result_list):
                     meta[key] = 0
                 meta[key] += val
 
-    return result_list, data_dict
+    return data_dict
 
 
-def store_data(data_dict, models, year):
+def store_data(data_dict_national, data_dict_provincial, models, year):
     """
     Store given data to the database.
     """
@@ -140,55 +140,63 @@ def store_data(data_dict, models, year):
 
     (model_prov, model_munic, model_ward, model_voting_dist) = models
 
-    for province in data_dict.keys():
+    for province in data_dict_national.keys():
         tmp = model_prov(
             province_id=province_keys[province],
             year=year,
-            results_national=json.dumps(data_dict[province]['results'])
+            results_national=json.dumps(data_dict_national[province]['results']),
+            results_provincial=json.dumps(data_dict_provincial[province]['results'])
         )
         db.session.add(tmp)
-        for municipality in data_dict[province]['municipalities'].keys():
+        for municipality in data_dict_national[province]['municipalities'].keys():
             if not "OUT OF COUNTRY" in municipality:
                 municipality_code = municipality.split(" ")[0]
                 tmp2 = model_munic(
                     province=tmp,
                     municipality_id=municipality_code,
                     year=year,
-                    results_national=json.dumps(data_dict[province]['municipalities'][municipality]['results'])
+                    results_national=json.dumps(data_dict_national[province]['municipalities'][municipality]['results']),
+                    results_provincial=json.dumps(data_dict_provincial[province]['municipalities'][municipality]['results'])
                 )
                 db.session.add(tmp2)
-                for ward in data_dict[province]['municipalities'][municipality]['wards'].keys():
+                for ward in data_dict_national[province]['municipalities'][municipality]['wards'].keys():
                     if not ward == 'N/A':
                         tmp3 = model_ward(
                             province=tmp,
                             municipality=tmp2,
                             ward_id=int(ward),
                             year=year,
-                            results_national=json.dumps(data_dict[province]['municipalities'][municipality]['wards'][ward]['results'])
+                            results_national=json.dumps(data_dict_national[province]['municipalities'][municipality]['wards'][ward]['results']),
+                            results_provincial=json.dumps(data_dict_provincial[province]['municipalities'][municipality]['wards'][ward]['results'])
                         )
                         db.session.add(tmp3)
-                    for voting_district in data_dict[province]['municipalities'][municipality]['wards'][ward]['voting_districts'].keys():
-                        tmp4 = model_voting_dist(
-                            province=tmp,
-                            municipality=tmp2,
-                            ward=tmp3,
-                            voting_district_id=int(voting_district),
-                            year=year,
-                            results_national=json.dumps(data_dict[province]['municipalities'][municipality]['wards'][ward]['voting_districts'][voting_district])
-                        )
-                        db.session.add(tmp4)
+                        for voting_district in data_dict_national[province]['municipalities'][municipality]['wards'][ward]['voting_districts'].keys():
+                            tmp4 = model_voting_dist(
+                                province=tmp,
+                                municipality=tmp2,
+                                ward=tmp3,
+                                voting_district_id=int(voting_district),
+                                year=year,
+                                results_national=json.dumps(data_dict_national[province]['municipalities'][municipality]['wards'][ward]['voting_districts'][voting_district]),
+                                results_provincial=json.dumps(data_dict_provincial[province]['municipalities'][municipality]['wards'][ward]['voting_districts'][voting_district])
+                            )
+                            db.session.add(tmp4)
     return
 
 
 if __name__ == "__main__":
 
     headings, result_list = read_data('election_results/2009 NPE.csv')
-    result_list, data_dict = parse_data(result_list)
+    data_dict_national = parse_data(result_list, '22 APR 2009 NATIONAL ELECTION')
+    data_dict_provincial = parse_data(result_list, "22 APR 2009 PROVINCIAL ELECTION")
 
     models = [Province, Municipality, Ward, VotingDistrict]
 
     # print(json.dumps(data_dict['EASTERN CAPE']['municipalities']['EC101 - CAMDEBOO [GRAAFF-REINET]']['wards']['21001004'], indent=4))
 
-    print(json.dumps(data_dict['EASTERN CAPE']['results'], indent=4))
-    store_data(data_dict, models, 2009)
+    print "\nNational"
+    print(json.dumps(data_dict_national['EASTERN CAPE']['results'], indent=4))
+    print "\nProvincial"
+    print(json.dumps(data_dict_provincial['EASTERN CAPE']['results'], indent=4))
+    store_data(data_dict_national, data_dict_provincial, models, 2009)
     db.session.commit()
