@@ -1,7 +1,7 @@
 from api import app, logger, db
 from flask import jsonify, request, make_response, render_template, redirect
 from models import *
-import serializers
+from serializers import serialize_area
 import json
 import time
 from sqlalchemy.sql import func
@@ -168,7 +168,8 @@ def results_by_area(event_type, year, area, area_id=None):
     }
 
     if area_id:
-        out = models[area][0].query.filter(models[area][1] == area_id).first().as_dict()
+        out = models[area][0].query.filter(models[area][1] == area_id).first()
+        out = serialize_area(out)
     else:
         if filter_area and filter_id:
             logger.debug("filtering: " + filter_area + " - " + filter_id)
@@ -186,7 +187,7 @@ def results_by_area(event_type, year, area, area_id=None):
             next = HOST + "/" + event_type + "/" + str(year) + "/" + area + "/?page=" + str(page+1)
         results = []
         for item in items:
-            results.append(item.as_dict())
+            results.append(serialize_area(item))
         if len(results) == 0:
             raise ApiException(404, "Not Found")
         out = {
