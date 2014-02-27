@@ -5,6 +5,10 @@ from api import db
 db.drop_all()
 db.create_all()
 
+party_overrides = {
+    "DEMOCRATIC ALLIANCE/DEMOKRATIESE ALLIANSIE": "DEMOCRATIC ALLIANCE",
+    "CONGRESS  OF THE PEOPLE": "CONGRESS OF THE PEOPLE",
+}
 
 def read_data(filename):
     """
@@ -46,6 +50,9 @@ def parse_data(result_list, event_desc):
             section_24a_votes,
             special_votes
         ) = row
+
+        if party_overrides.get(party_name):
+            party_name = party_overrides[party_name]
 
         if num_registered == "N/A":
             num_registered = "0"
