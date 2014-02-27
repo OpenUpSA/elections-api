@@ -4,6 +4,7 @@ from models import *
 import serializers
 import json
 import time
+from sqlalchemy.sql import func
 
 HOST = app.config['HOST']
 
@@ -122,7 +123,7 @@ def results_by_area(event_type, year, area, area_id=None):
     year = validate_year(year)
     area = validate_area(area)
 
-    # validate query parameters
+    # validate filter parameters
     filter_area = None
     for tmp_area in reversed(areas):
         if request.args.get(tmp_area):
@@ -134,6 +135,14 @@ def results_by_area(event_type, year, area, area_id=None):
                 raise ApiException(422, "The specified filter parameter cannot be used in this query.")
             break
 
+    # validate paging parameters
+    page = 0
+    per_page = 50
+    if request.args.get('page'):
+        try:
+            page = int(request.args.get('page'))
+        except ValueError:
+            raise ApiException(422, "Please specify a valid 'page'.")
 
     models = {
         "province": (Province, Province.province_id),
@@ -145,10 +154,20 @@ def results_by_area(event_type, year, area, area_id=None):
     if area_id:
         out = models[area][0].query.filter(models[area][1] == area_id).first().as_dict()
     else:
-        items = models[area][0].query.limit(20).all()
-        out = []
+        count = models[area][0].query.count()
+        items = models[area][0].query.order_by(models[area][1]).limit(per_page).offset(page*per_page).all()
+        next = None
+        if count > (page + 1) * per_page:
+            next = HOST + "/" + event_type + "/" + str(year) + "/" + area + "/?page=" + str(page+1)
+        results = []
         for item in items:
-            out.append(item.as_dict())
-    logger.debug(out)
+            results.append(item.as_dict())
+        if len(results) == 0:
+            raise ApiException(404, "Not Found")
+        out = {
+            'count': count,
+            'next': next,
+            'results': results
+        }
 
     return make_response(json.dumps(out))
