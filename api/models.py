@@ -14,9 +14,13 @@ class VotingDistrict(db.Model):
     results_provincial = Column(String)
     results_national = Column(String)
     ward_pk = Column(Integer, ForeignKey('wards.pk'))
+    municipality_pk = Column(Integer, ForeignKey('municipalities.pk'))
+    province_pk = Column(Integer, ForeignKey('provinces.pk'))
 
     # associations
     ward = relationship("Ward")
+    municipality = relationship("Municipality")
+    province = relationship("Province")
 
     # indexes
     Index('voting_district_year_id_ix', year, voting_district_id, unique=True)
@@ -40,9 +44,11 @@ class Ward(db.Model):
     results_provincial = Column(String)
     results_national = Column(String)
     municipality_pk = Column(Integer, ForeignKey('municipalities.pk'))
+    province_pk = Column(Integer, ForeignKey('provinces.pk'))
 
     # associations
     municipality = relationship("Municipality")
+    province = relationship("Province")
 
     # indexes
     Index('ward_year_id_ix', year, ward_id, unique=True)

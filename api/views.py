@@ -125,10 +125,11 @@ def results_by_area(event_type, year, area, area_id=None):
 
     # validate filter parameters
     filter_area = None
+    filter_id = None
     for tmp_area in reversed(areas):
         if request.args.get(tmp_area):
             filter_area = tmp_area
-            filter_id = int(request.args.get(tmp_area))
+            filter_id = request.args.get(tmp_area)
 
             # throw an exception, if this is not a viable filter for the specified area
             if areas.index(filter_area) >= areas.index(area):
@@ -151,11 +152,35 @@ def results_by_area(event_type, year, area, area_id=None):
         "voting_district": (VotingDistrict, VotingDistrict.voting_district_id)
     }
 
+    model_filters = {
+        "municipality": {
+            "province": Municipality.province,
+        },
+        "ward": {
+            "province": Ward.province,
+            "municipality": Ward.municipality,
+        },
+        "voting_district": {
+            "province": VotingDistrict.province,
+            "municipality": VotingDistrict.municipality,
+            "ward": VotingDistrict.ward,
+        },
+    }
+
     if area_id:
         out = models[area][0].query.filter(models[area][1] == area_id).first().as_dict()
     else:
-        count = models[area][0].query.count()
-        items = models[area][0].query.order_by(models[area][1]).limit(per_page).offset(page*per_page).all()
+        if filter_area and filter_id:
+            logger.debug("filtering: " + filter_area + " - " + filter_id)
+            # retrieve the entity that will be filtered on
+            obj = models[filter_area][0].query.filter(models[filter_area][1]==filter_id).first()
+            if obj is None:
+                raise ApiException(404, "Could not find the specified filter. Check that you have provided a valid ID, or remove the filter.")
+            count = models[area][0].query.filter(model_filters[area][filter_area]==obj).count()
+            items = models[area][0].query.filter(model_filters[area][filter_area]==obj).order_by(models[area][1]).limit(per_page).offset(page*per_page).all()
+        else:
+            count = models[area][0].query.count()
+            items = models[area][0].query.order_by(models[area][1]).limit(per_page).offset(page*per_page).all()
         next = None
         if count > (page + 1) * per_page:
             next = HOST + "/" + event_type + "/" + str(year) + "/" + area + "/?page=" + str(page+1)
@@ -169,5 +194,4 @@ def results_by_area(event_type, year, area, area_id=None):
             'next': next,
             'results': results
         }
-
     return make_response(json.dumps(out))

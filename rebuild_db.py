@@ -149,8 +149,9 @@ def store_data(data_dict, models, year):
         db.session.add(tmp)
         for municipality in data_dict[province]['municipalities'].keys():
             if not "OUT OF COUNTRY" in municipality:
-                municipality_code = municipality.split(" - ")[0]
+                municipality_code = municipality.split(" ")[0]
                 tmp2 = model_munic(
+                    province=tmp,
                     municipality_id=municipality_code,
                     year=year,
                     results_national=json.dumps(data_dict[province]['municipalities'][municipality]['results'])
@@ -159,6 +160,8 @@ def store_data(data_dict, models, year):
                 for ward in data_dict[province]['municipalities'][municipality]['wards'].keys():
                     if not ward == 'N/A':
                         tmp3 = model_ward(
+                            province=tmp,
+                            municipality=tmp2,
                             ward_id=int(ward),
                             year=year,
                             results_national=json.dumps(data_dict[province]['municipalities'][municipality]['wards'][ward]['results'])
