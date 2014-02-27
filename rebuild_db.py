@@ -167,6 +167,16 @@ def store_data(data_dict, models, year):
                             results_national=json.dumps(data_dict[province]['municipalities'][municipality]['wards'][ward]['results'])
                         )
                         db.session.add(tmp3)
+                    for voting_district in data_dict[province]['municipalities'][municipality]['wards'][ward]['voting_districts'].keys():
+                        tmp4 = model_voting_dist(
+                            province=tmp,
+                            municipality=tmp2,
+                            ward=tmp3,
+                            voting_district_id=int(voting_district),
+                            year=year,
+                            results_national=json.dumps(data_dict[province]['municipalities'][municipality]['wards'][ward]['voting_districts'][voting_district])
+                        )
+                        db.session.add(tmp4)
     return
 
 
