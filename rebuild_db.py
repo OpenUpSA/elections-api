@@ -19,10 +19,22 @@ def read_data(filename):
     with open(filename, 'Ur') as f:
         result_list = list(tuple(rec) for rec in csv.reader(f, delimiter=','))
 
-    headings = result_list[0]
+    tmp = result_list[0]
+    headings = []
+    for i in range(len(tmp)):
+        headings.append(tmp[i].replace("\n", " "))
     print headings
     result_list = result_list[1::]
     print result_list[333]
+    # convert rows from lists to dicts
+    tmp = []
+    for row in result_list:
+        row_dict = {}
+        for i in range(len(row)):
+            col = row[i]
+            row_dict[headings[i]] = col
+        tmp.append(row_dict)
+    result_list = tmp
     return headings, result_list
 
 
@@ -35,21 +47,20 @@ def parse_data(result_list, event_desc):
 
     for row in result_list:
 
-        (
-            electoral_event,
-            province,
-            municipality,
-            ward,
-            voting_district,
-            party_name,
-            num_registered,
-            turnout_percentage,
-            vote_count,
-            spoilt_votes,
-            total_votes,
-            section_24a_votes,
-            special_votes
-        ) = row
+        # read incoming row of data into local variables
+        electoral_event = row.get('ELECTORAL EVENT')
+        province = row.get('PROVINCE')
+        municipality = row.get('MUNICIPALITY')
+        ward = row.get('WARD')
+        voting_district = row.get('VOTING DISTRICT')
+        party_name = row.get('PARTY NAME')
+        num_registered = row.get('REGISTERED VOTERS')
+        turnout_percentage = row.get('% VOTERTURNOUT')
+        vote_count = row.get('VALID VOTES')
+        spoilt_votes = row.get('SPOILT VOTES')
+        total_votes = row.get('TOTAL VOTES CAST')
+        section_24a_votes = row.get('SECTION 24A VOTES')
+        special_votes = row.get('SPECIAL VOTES')
 
         if party_name_overrides.get(party_name):
             party_name = party_name_overrides[party_name]
@@ -192,6 +203,48 @@ def store_data(data_dict_national, data_dict_provincial, models, year):
 
 
 if __name__ == "__main__":
+
+    cols_2009 = [
+        'ELECTORAL EVENT',
+        'PROVINCE',
+        'MUNICIPALITY',
+        'WARD',
+        'VOTING DISTRICT',
+        'PARTY NAME',
+        'REGISTERED VOTERS',
+        '% VOTERTURNOUT',
+        'VALID VOTES',
+        'SPOILT VOTES',
+        'TOTAL VOTES CAST',
+        'SECTION 24A VOTES',
+        'SPECIAL VOTES',
+        ]
+
+    cols_2004 = [
+        'ELECTORAL EVENT',
+        'PROVINCE',
+        'MUNICIPALITY',
+        'VOTING DISTRICT',
+        'PARTY NAME',
+        'REGISTERED VOTERS',
+        '% VOTER TURNOUT',
+        'VALID VOTES',
+        'SPOILT VOTES',
+        'TOTAL VOTES CAST',
+        ]
+
+    cols_1999 = [
+        'ELECTORAL EVENT',
+        'PROVINCE',
+        'MUNICIPALITY',
+        'VOTING DISTRICT',
+        'PARTY NAME',
+        'REGISTERED VOTERS',
+        '% VOTER TURNOUT',
+        'VALID VOTES',
+        'SPOILT VOTES',
+        'TOTAL VOTES CAST',
+    ]
 
     headings, result_list = read_data('election_results/2009 NPE.csv')
     data_dict_national = parse_data(result_list, '22 APR 2009 NATIONAL ELECTION')
