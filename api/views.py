@@ -107,7 +107,8 @@ def results_overall(event_type, year):
     out = {}
     out['results'] = []  # the overall results
     for area in areas:
-        out[area] = HOST + "/" + event_type + "/" + str(year) + "/" + area + "/"
+        if area != 'ward' or year >= 2009:
+            out[area] = HOST + "/" + event_type + "/" + str(year) + "/" + area + "/"
     return jsonify(out)
 
 
