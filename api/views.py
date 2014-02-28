@@ -177,11 +177,11 @@ def results_by_area(event_type, year, area, area_id=None):
             obj = models[filter_area][0].query.filter(models[filter_area][1]==filter_id).first()
             if obj is None:
                 raise ApiException(404, "Could not find the specified filter. Check that you have provided a valid ID, or remove the filter.")
-            count = models[area][0].query.filter(model_filters[area][filter_area]==obj).count()
-            items = models[area][0].query.filter(model_filters[area][filter_area]==obj).order_by(models[area][1]).limit(per_page).offset(page*per_page).all()
+            count = models[area][0].query.filter(models[area][0].year==year).filter(model_filters[area][filter_area]==obj).count()
+            items = models[area][0].query.filter(models[area][0].year==year).filter(model_filters[area][filter_area]==obj).order_by(models[area][1]).limit(per_page).offset(page*per_page).all()
         else:
-            count = models[area][0].query.count()
-            items = models[area][0].query.order_by(models[area][1]).limit(per_page).offset(page*per_page).all()
+            count = models[area][0].query.filter(models[area][0].year==year).count()
+            items = models[area][0].query.filter(models[area][0].year==year).order_by(models[area][1]).limit(per_page).offset(page*per_page).all()
         next = None
         if count > (page + 1) * per_page:
             next = HOST + "/" + event_type + "/" + str(year) + "/" + area + "/?page=" + str(page+1)
