@@ -1,5 +1,15 @@
 from rest_framework import serializers
 from iec import models
+from rest_framework_csv.renderers import CSVRenderer
+from rest_framework_csv.renderers import CSVRenderer
+
+class PaginatedCSVRenderer (CSVRenderer):
+    results_field = 'results'
+
+    def render(self, data, media_type=None, renderer_context=None):
+        if not isinstance(data, list):
+            data = data.get(self.results_field, [])
+        return super(PaginatedCSVRenderer, self).render(data, media_type, renderer_context)
 
 class PartySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -48,6 +58,13 @@ class ResultVoteSerializer(serializers.HyperlinkedModelSerializer):
 
 class VotingDistrictVotesSerializer(serializers.HyperlinkedModelSerializer):
     votes = ResultVoteSerializer(source="result_set")
+
+    class Meta:
+        model = models.VotingDistrict
+
+class VotingDistrictCSVVotesSerializer(serializers.Serializer):
+    votes = ResultVoteSerializer(source="result_set")
+    party = PartySerializer()
 
     class Meta:
         model = models.VotingDistrict
@@ -117,3 +134,42 @@ class ProvinceVotesSerializer(serializers.HyperlinkedModelSerializer):
 class ResultSummarySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.ResultSummary
+
+class FlatProvinceVotesSerializer(serializers.ModelSerializer):
+    votes = ProvinceVoteField(source="municipality_set")
+
+    class Meta:
+        model = models.Municipality
+        fields = ("name", "votes")
+
+class FlatMunicipalitySerializer(serializers.ModelSerializer):
+    province = ProvinceSerializer()
+    class Meta:
+        model = models.Municipality
+        fields = ("name", "province")
+        depth = 1
+
+class FlatWardSerializer(serializers.ModelSerializer):
+    municipality = FlatMunicipalitySerializer()
+    class Meta:
+        model = models.Ward
+        fields = ("code", "municipality")
+        depth = 1
+
+class FlatVotingDistrictSerializer(serializers.ModelSerializer):
+    ward = FlatWardSerializer()
+
+    class Meta:
+        model = models.VotingDistrict
+        fields = ("code", "ward")
+        depth = 1
+
+class FlatResultSerializer(serializers.ModelSerializer):
+    event = EventSerializer()
+    voting_district = FlatVotingDistrictSerializer()
+    party = PartySerializer()
+
+    class Meta:
+        model = models.Result
+        fields = ("event", "voting_district", "party", "votes")
+        depth = 1

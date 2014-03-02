@@ -48,3 +48,11 @@ The available filter fields for ```/resultsummaries``` are:
     voter_turnout_perc, max_voter_turnout_perc, min_voter_turnout_perc,
     section_24a_votes, max_section_24a_votes, min_section_24a_votes,
     voting_district, ward, municipality, province
+
+You can also get csv output for results like this:
+
+    http://iec.code4sa.org/flat_results/?ward=21002005&format=csv
+
+It only returns 100 results at a time so you can request the next page like this
+
+    http://iec.code4sa.org/flat_results/?ward=21002005&format=csv&page=3

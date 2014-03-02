@@ -2,6 +2,9 @@ import models
 from rest_framework import viewsets
 from rest_framework import filters
 from rest_framework import generics
+from rest_framework.settings import api_settings
+from rest_framework.views import APIView
+from rest_framework_csv import renderers as r
 import django_filters
 import serializers
 import filters
@@ -56,6 +59,28 @@ class ResultViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Result.objects.all()
     serializer_class = serializers.ResultSerializer
     filter_class = filters.ResultFilter
+
+    def get_queryset(self):
+        event = self.request.QUERY_PARAMS.get('event', 1)
+        queryset = models.Result.objects.filter(event__pk=int(event))
+        return queryset
+
+class FlatResultViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = models.Result.objects.all()
+    serializer_class = serializers.FlatResultSerializer
+    filter_class = filters.ResultFilter
+    renderer_classes =  tuple(api_settings.DEFAULT_RENDERER_CLASSES)  + (serializers.PaginatedCSVRenderer, )
+
+    def get_queryset(self):
+        event = self.request.QUERY_PARAMS.get('event', 1)
+        queryset = models.Result.objects.filter(event__pk=int(event))
+        return queryset
+
+class ResultCSVViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = models.Result.objects.all()
+    serializer_class = serializers.FlatResultSerializer
+    filter_class = filters.ResultFilter
+    renderer_classes = (serializers.PaginatedCSVRenderer,)
 
     def get_queryset(self):
         event = self.request.QUERY_PARAMS.get('event', 1)
