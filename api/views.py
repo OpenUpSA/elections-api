@@ -79,7 +79,7 @@ def index_event_types():
 
     out = {}
     for event_type in event_types:
-        out[event_type] = HOST + "/" + event_type + "/"
+        out[event_type] = request.url_root + event_type + "/"
     return jsonify(out)
 
 
@@ -92,7 +92,7 @@ def index_years(event_type):
     event_type = validate_event_type(event_type)
     out = {}
     for year in years:
-        out[year] = HOST + "/" + event_type + "/" + str(year) + "/"
+        out[year] = request.url_root + event_type + "/" + str(year) + "/"
     return jsonify(out)
 
 
@@ -108,7 +108,7 @@ def results_overall(event_type, year):
     out['results'] = []  # the overall results
     for area in areas:
         if area != 'ward' or year >= 2009:
-            out[area] = HOST + "/" + event_type + "/" + str(year) + "/" + area + "/"
+            out[area] = request.url_root + event_type + "/" + str(year) + "/" + area + "/"
     return jsonify(out)
 
 
@@ -185,7 +185,7 @@ def results_by_area(event_type, year, area, area_id=None):
             items = models[area][0].query.filter(models[area][0].year==year).order_by(models[area][1]).limit(per_page).offset(page*per_page).all()
         next = None
         if count > (page + 1) * per_page:
-            next = HOST + "/" + event_type + "/" + str(year) + "/" + area + "/?page=" + str(page+1)
+            next = request.url_root + event_type + "/" + str(year) + "/" + area + "/?page=" + str(page+1)
         results = []
         for item in items:
             results.append(serialize_area(item))
