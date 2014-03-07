@@ -1,31 +1,7 @@
 from __future__ import with_statement
-# from fabdefs import *
+from fabdefs import *
 from fabric.api import *
 from contextlib import contextmanager
-
-
-def common():
-    """
-    Common environment parameters
-    """
-
-    env.activate = 'source %s/env/bin/activate' % env.code_dir
-    return
-
-
-def staging():
-    """
-    Env parameters for the staging environment.
-    """
-
-    env.hosts = ['5.9.195.4',]
-    env.user = 'root'
-    env.envname = 'staging'
-    env.code_dir = '/var/www/iec.code4sa.org'
-    env.config_dir = 'config_staging'
-    common()
-    print("STAGING ENVIRONMENT\n")
-    return
 
 
 @contextmanager
@@ -48,7 +24,7 @@ def set_permissions():
      Ensure that www-data has access to the application folder
     """
 
-    sudo('chmod -R 775 ' + env.code_dir)
+    sudo('chmod -R 744 ' + env.code_dir)
     sudo('chown -R www-data:www-data ' + env.code_dir)
     return
 
