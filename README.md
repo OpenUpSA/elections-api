@@ -14,22 +14,22 @@ including this data in their own applications.
 
 Requests to the API should take the following form:
 
-    http://election-results.code4sa.org/<event_type>/<year>/<area>/<id>/?<filter_args>
+    http://iec-v2.code4sa.org/<event_type>/<year>/<area>/<id>/?<filter_args>
 
 For example,
 
-    http://election-results.code4sa.org/national/2009/ward/21002004/
+    http://iec-v2.code4sa.org/national/2009/ward/21002004/
 
 retrieves the results for a specific ward in the national elections of 2009.
 If the ward's ID is left out
 
-    http://election-results.code4sa.org/national/2009/ward/
+    http://iec-v2.code4sa.org/national/2009/ward/
 
 then the API will respond with a list of all the known wards, which can be paged through.
 But for a quicker way of targeting a specific area's results, an optional filter argument can be included. This can
 narrow down the search to a province, municipality, or ward of interest, e.g.
 
-    http://election-results.code4sa.org/national/2009/ward/?municipality=EC102
+    http://iec-v2.code4sa.org/national/2009/ward/?municipality=EC102
 
 ### Available endpoints
 
@@ -55,19 +55,23 @@ When constructing API calls of the form shown above, the following values can be
 
 ### Filter options
 
-Results may be filtered by specifying an ID for any of the area variables. Here are some examples:
+With the endpoints given above, you can either access a single object of interest (by specifying an id) or a list
+of all available objects (e.g. all the wards in the country). This covers a lot of use cases, but there may
+be situations where you may want a more specific list of results. For example, you may want to look at all
+of the wards in a given municipality, or all of the municipalities in a given province.
+
+For this purpose, the following filters are included in the API:
 
     ?province=EASTERN%20CAPE
     ?municipality=EKU
     ?ward=79300006
     ?voting_district=79300006
 
+They allow you to efficiently access the child-records of some specified parent area.
+
 ### Other options
 
-If you just want to retrieve a list of the available areas, without all the overhead of including results, you can
-add the following optional query parameter:
-
-    ?include_results=False
+TODO: option for retrieving area records without results
 
 TODO: add GeoJSON shapes where available
 
@@ -82,9 +86,12 @@ If you want to contribute to the code, please fork the repository, make your cha
 
 ### Local setup
 
-In an new terminal window, create a virtual environment:
+After cloning the project, open a terminal window and navigate to the project folder:
 
     cd <project_dir>
+
+Now create a virtual environment:
+
     virtualenv --no-site-packages env
     source env/bin/activate
 
@@ -96,7 +103,22 @@ Run Flask dev server:
 
     python runserver.py
 
-TODO: add database population instructions
+The API should now be running at http://localhost:5000, but it won't have any data to display. To populate
+the database, first ensure that you have sqlite3 installed on your system. Then download the raw CSV election
+result files, and unzip them in the 'election_results' directory:
+
+    cd election_results
+    wget http://www.elections.org.za/content/uploadedfiles/2009%20NPE.zip
+    unzip '2009 NPE.zip'
+    wget http://www.elections.org.za/content/uploadedfiles/2004%20NPE.zip
+    unzip '2004 NPE.zip'
+    wget http://www.elections.org.za/content/uploadedfiles/1999%20NPE.zip
+    unzip '1999 NPE.zip'
+
+Now, build the database with:
+
+    cd ..
+    python rebuild_db.py
 
 ### Deploy instructions
 

@@ -42,6 +42,14 @@ def download_election_data():
     return
 
 
+def rebuild_db():
+
+    with cd(env.code_dir):
+        with virtualenv():
+            sudo('python rebuild_db.py')
+    return
+
+
 def setup():
     """
     Install dependencies and create an application directory.
@@ -118,14 +126,6 @@ def configure():
 
     set_permissions()
     restart()
-    return
-
-
-def rebuild_db():
-
-    with cd(env.code_dir):
-        with virtualenv():
-            sudo('python rebuild_db.py')
     return
 
 
