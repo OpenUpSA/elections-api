@@ -35,7 +35,7 @@ class VotingDistrictFilter(django_filters.FilterSet):
 class ResultFilter(django_filters.FilterSet):
     voting_district = django_filters.CharFilter(name="voting_district__code")
     ward = django_filters.CharFilter(name="voting_district__ward__code")
-    municipality = django_filters.CharFilter(name="voting_district__ward__municipality__pk")
+    municipality = django_filters.CharFilter(name="voting_district__ward__municipality__name", lookup_type="istartswith")
     province = django_filters.CharFilter(name="voting_district__ward__municipality__province__name", lookup_type="iexact")
     party = django_filters.CharFilter(name="party__name", lookup_type="iexact")
 
