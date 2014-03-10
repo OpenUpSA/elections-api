@@ -107,11 +107,7 @@ def results_overall(event_type, year):
     out = {}
 
     item = Country.query.filter(Country.year==year).first()
-    results = [serialize_area(item, event_type), ]
-    if len(results) == 0:
-        raise ApiException(404, "Not Found")
-
-    out['results'] = results  # the overall results
+    out['results'] = serialize_area(item, event_type)['results']
 
     for area in areas:
         if area != 'ward' or year >= 2009:

@@ -26,4 +26,7 @@ def serialize_area(area_obj, event_type):
         out['results'] = out['results_national']
         out.pop('results_national')
 
+    if hasattr(area_obj, 'year'):
+        out.pop('year')
+
     return out
