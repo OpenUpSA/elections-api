@@ -199,4 +199,4 @@ def results_by_area(event_type, year, area, area_id=None):
             'next': next,
             'results': results
         }
-    return make_response(json.dumps(out))
+    return jsonify(out)

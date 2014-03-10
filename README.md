@@ -53,6 +53,9 @@ When constructing API calls of the form shown above, the following values can be
         * ward
         * voting_district
 
+Please note that ward-level data is not available for the 1999 & 2004 elections. This is because the data is not
+included in the IEC's datasets for those two elections.
+
 ### Filter options
 
 With the endpoints given above, you can either access a single object of interest (by specifying an id) or a list
