@@ -1,3 +1,5 @@
+import json
+
 
 def serialize_area(area_obj, event_type):
 
@@ -19,11 +21,11 @@ def serialize_area(area_obj, event_type):
 
     if event_type == 'provincial':
         out.pop('results_national')
-        out['results'] = out['results_provincial']
+        out['results'] = json.loads(out['results_provincial'])
         out.pop('results_provincial')
     else:
         out.pop('results_provincial')
-        out['results'] = out['results_national']
+        out['results'] = json.loads(out['results_national'])
         out.pop('results_national')
 
     if hasattr(area_obj, 'year'):
