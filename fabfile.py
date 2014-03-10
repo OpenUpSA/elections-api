@@ -1,46 +1,161 @@
+from __future__ import with_statement
 from fabdefs import *
-from fabric.operations import local, run
-from fabric.context_managers import lcd
-import os
+from fabric.api import *
+from contextlib import contextmanager
 
-python = "%s/bin/python" % env_dir
-pip = "%s/bin/pip" % env_dir
 
-elections_url = "http://www.elections.org.za/content/uploadedfiles/2009%20NPE.zip"
-elections_file = "2009 NPE.csv"
-os.environ["DJANGO_SETTINGS_MODULE"] = "settings.local"
-project_root = os.path.dirname(os.path.realpath(__name__))
-code_root = os.path.join(project_root, "server")
-db_file = os.path.join(code_root, "default.db")
+@contextmanager
+def virtualenv():
+    with cd(env.code_dir):
+        with prefix(env.activate):
+            yield
 
-def download_data():
-    local("mkdir -p data")
 
-    with lcd('data'):
-        local("wget -N '{}'".format(elections_url))
-        local("unzip '{}'".format("*.zip"))
-        local("sed -e :a -e N -e '1,9 s/\\n/ /' -e ta '{}' > out".format(elections_file))
-        local("mv out '{}'".format(elections_file))
+def restart():
 
-def populate():
-    with lcd(code_root):
-        local("python manage.py populatedata '../data/{}' --traceback".format(elections_file))
+    with settings(warn_only=True):
+        sudo('service nginx restart')
+        sudo('supervisorctl restart elections-api')
+    return
 
-def setup_db():
-    download_data()
-    with lcd(code_root):
-        if os.path.exists(db_file):
-            os.remove(db_file)
-        local("python manage.py syncdb --no-initial-data --noinput")
-        loaddata()
+
+def set_permissions():
+    """
+     Ensure that www-data has access to the application folder
+    """
+
+    sudo('chmod -R 744 ' + env.code_dir)
+    sudo('chown -R www-data:www-data ' + env.code_dir)
+    return
+
+
+def download_election_data():
+
+    with cd(env.code_dir):
+        with cd('election_results'):
+            run('wget http://www.elections.org.za/content/uploadedfiles/2009%20NPE.zip')
+            run("unzip '2009 NPE.zip'")
+            run('wget http://www.elections.org.za/content/uploadedfiles/2004%20NPE.zip')
+            run("unzip '2004 NPE.zip'")
+            run('wget http://www.elections.org.za/content/uploadedfiles/1999%20NPE.zip')
+            run("unzip '1999 NPE.zip'")
+    return
+
+
+def rebuild_db():
+
+    with cd(env.code_dir):
+        with virtualenv():
+            sudo('python rebuild_db.py')
+    return
+
+
+def setup():
+    """
+    Install dependencies and create an application directory.
+    """
+
+    with settings(warn_only=True):
+        sudo('service nginx stop')
+
+    # install packages
+    sudo('apt-get install build-essential python python-dev')
+    sudo('apt-get install python-pip supervisor')
+    sudo('pip install virtualenv')
+    sudo('apt-get install git unzip socket')
+
+    # create application directory if it doesn't exist yet
+    with settings(warn_only=True):
+        if run("test -d %s" % env.code_dir).failed:
+            # create project folder
+            sudo('mkdir -p ' + env.code_dir)
+            sudo('mkdir -p %s/api' % env.code_dir)
+            sudo('mkdir %s/instance' % env.code_dir)
+            sudo('mkdir %s/election_results' % env.code_dir)
+        if run("test -d %s/env" % env.code_dir).failed:
+            # create virtualenv
+            sudo('virtualenv --no-site-packages %s/env' % env.code_dir)
+
+    # install the necessary Python packages
+    with virtualenv():
+        put('requirements/base.txt', '/tmp/base.txt')
+        put('requirements/production.txt', '/tmp/production.txt')
+        sudo('pip install -r /tmp/production.txt')
+
+    # install nginx
+    sudo('apt-get install nginx')
+    # restart nginx after reboot
+    sudo('update-rc.d nginx defaults')
+    sudo('service nginx start')
+
+    set_permissions()
+    return
+
+
+def configure():
+    """
+    Upload config files, then restart application.
+    """
+
+    with settings(warn_only=True):
+        # disable default site
+        sudo('rm /etc/nginx/sites-enabled/default')
+
+    # upload nginx server blocks (virtualhost)
+    put(env.config_dir + '/nginx.conf', '/tmp/nginx.conf')
+    sudo('mv /tmp/nginx.conf %s/nginx_elections-api.conf' % env.code_dir)
+
+    with settings(warn_only=True):
+        sudo('ln -s %s/nginx_elections-api.conf /etc/nginx/conf.d/' % env.code_dir)
+
+    # upload supervisor config
+    put(env.config_dir + '/supervisor.conf', '/tmp/supervisor.conf')
+    sudo('mv /tmp/supervisor.conf /etc/supervisor/conf.d/supervisor_elections-api.conf')
+    sudo('supervisorctl reread')
+    sudo('supervisorctl update')
+
+    # upload flask config
+    put(env.config_dir + '/config.py', '/tmp/config.py')
+    sudo('mv /tmp/config.py %s/instance/config.py' % env.code_dir)
+    put(env.config_dir + '/config_private.py', '/tmp/config_private.py')
+    sudo('mv /tmp/config_private.py %s/instance/config_private.py' % env.code_dir)
+
+    # upload rebuild_db script
+    put('rebuild_db.py', '/tmp/rebuild_db.py')
+    sudo('mv /tmp/rebuild_db.py %s/rebuild_db.py' % env.code_dir)
+
+    set_permissions()
+    restart()
+    return
+
 
 def deploy():
-    #local("git push origin master")
-    with api.cd(code_dir):
-        api.run("git pull origin master")
-        api.run("%s install -r %s/requirements/production.txt --quiet" % (pip, code_dir))
+    """
+    Upload our package to the server, unzip it, and restart the application.
+    """
 
-        with api.cd(code_dir + "/server"):
-            api.run("%s manage.py collectstatic --noinput --settings=settings.production" % python)
+    # create a tarball of our package
+    local('tar -czf api.tar.gz api/', capture=False)
 
-        api.sudo("supervisorctl restart iec")
+    # upload the source tarball to the temporary folder on the server
+    put('api.tar.gz', '/tmp/api.tar.gz')
+
+    with settings(warn_only=True):
+        sudo('service nginx stop')
+
+    # enter application directory
+    with cd(env.code_dir):
+        # and unzip new files
+        sudo('tar xzf /tmp/api.tar.gz')
+
+    # now that all is set up, delete the tarball again
+    sudo('rm /tmp/api.tar.gz')
+    local('rm api.tar.gz')
+
+    # clean out old logfiles
+    with settings(warn_only=True):
+        sudo('rm %s/debug.log*' % env.code_dir)
+
+    set_permissions()
+    restart()
+    return

@@ -1,4 +1,2 @@
 -r base.txt
 gunicorn
-python-memcached
-psycopg2

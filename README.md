@@ -1,58 +1,129 @@
-Elections API
-=============
+# Elections API
 
 An API on top of the IEC elections data
 
-Installation
-============
+## What does this project do
 
-    git clone git@github.com:Code4SA/elections-api.git
-    cd elections-api
-    fab setup_db
-    pip install -r requirements.txt # best to run this in a virtualenv 
-    fab setup_db
+This project implements an HTTP api wrapper around the South African elections data provided
+by the Independent Electoral Commission (http://www.elections.org.za/content/Elections/Election-results/).
 
-API
-===
+The goal is to make the election results more accessible by giving developers a simple way of
+including this data in their own applications.
 
-You can find a rudimentary API at [http://iec.code4sa.org](http://iec.code4sa.org). You can find example api calls on the home page. In addition, Results and ResultSummaries can be filtered by geographical location e.g.
+## Using the API
 
-    http://iec.code4sa.org/results/?voting_district=10590006
-    http://iec.code4sa.org/results/?ward=21001001
-    http://iec.code4sa.org/results/?municipality=1
-    http://iec.code4sa.org/results/?province=Gauteng
+Requests to the API should take the following form:
 
-and similarly:
-        
+    http://iec-v2.code4sa.org/<event_type>/<year>/<area>/<id>/?<filter_args>
 
-    http://iec.code4sa.org/result_summaries/?voting_district=10590006
-    http://iec.code4sa.org/result_summaries/?ward=21001001
-    http://iec.code4sa.org/result_summaries/?municipality=1
-    http://iec.code4sa.org/result_summaries/?province=Western%20Cape
+For example,
 
-more advanced filtering is also available such as:
+    http://iec-v2.code4sa.org/national/2009/ward/21002004/
 
-    http://iec.code4sa.org/results/?province=Western%20Cape&min_votes=1000
+retrieves the results for a specific ward in the national elections of 2009.
+If the ward's ID is left out
 
-The available filter fields for ```/results``` are:
+    http://iec-v2.code4sa.org/national/2009/ward/
 
-    votes, max_votes, min_votes,
-    party, voting_district, ward, municipality, province
+then the API will respond with a list of all the known wards, which can be paged through.
+But for a quicker way of targeting a specific area's results, an optional filter argument can be included. This can
+narrow down the search to a province, municipality, or ward of interest, e.g.
 
-The available filter fields for ```/resultsummaries``` are:
+    http://iec-v2.code4sa.org/national/2009/ward/?municipality=EC102
 
-    total_votes, max_total_votes, min_total_votes,
-    spoilt_votes, max_spoilt_votes, min_spoilt_votes,
-    registered_voters, max_registered_voters, min_registered_voters,
-    special_votes, max_special_votes, min_special_votes,
-    voter_turnout_perc, max_voter_turnout_perc, min_voter_turnout_perc,
-    section_24a_votes, max_section_24a_votes, min_section_24a_votes,
-    voting_district, ward, municipality, province
+### Available endpoints
 
-You can also get csv output for results like this:
+When constructing API calls of the form shown above, the following values can be used:
 
-    http://iec.code4sa.org/flat_results/?ward=21002005&format=csv
+    event_type:
 
-It only returns 100 results at a time so you can request the next page like this
+        * national
+        * provincial
 
-    http://iec.code4sa.org/flat_results/?ward=21002005&format=csv&page=3
+    year:
+
+        * 1999
+        * 2004
+        * 2009
+
+    area:
+
+        * province
+        * municipality
+        * ward
+        * voting_district
+
+### Filter options
+
+With the endpoints given above, you can either access a single object of interest (by specifying an id) or a list
+of all available objects (e.g. all the wards in the country). This covers a lot of use cases, but there may
+be situations where you may want a more specific list of results. For example, you may want to look at all
+of the wards in a given municipality, or all of the municipalities in a given province.
+
+For this purpose, the following filters are included in the API:
+
+    ?province=EASTERN%20CAPE
+    ?municipality=EKU
+    ?ward=79300006
+    ?voting_district=79300006
+
+They allow you to efficiently access the child-records of some specified parent area.
+
+### Other options
+
+TODO: option for retrieving area records without results
+
+TODO: add GeoJSON shapes where available
+
+TODO: filter by latitude & longitude, using a bounding box
+
+## Contributing to the project
+
+This project is open-source, and anyone is welcome to contribute. If you just want to make us aware of a bug / make
+a feature request, then please add a new GitHub Issue (if a similar one does not already exist).
+
+If you want to contribute to the code, please fork the repository, make your changes, and create a pull request.
+
+### Local setup
+
+After cloning the project, open a terminal window and navigate to the project folder:
+
+    cd <project_dir>
+
+Now create a virtual environment:
+
+    virtualenv --no-site-packages env
+    source env/bin/activate
+
+Install python libraries:
+
+    pip install -r requirements/development.txt
+
+Run Flask dev server:
+
+    python runserver.py
+
+The API should now be running at http://localhost:5000, but it won't have any data to display. To populate
+the database, first ensure that you have sqlite3 installed on your system. Then download the raw CSV election
+result files, and unzip them in the 'election_results' directory:
+
+    cd election_results
+    wget http://www.elections.org.za/content/uploadedfiles/2009%20NPE.zip
+    unzip '2009 NPE.zip'
+    wget http://www.elections.org.za/content/uploadedfiles/2004%20NPE.zip
+    unzip '2004 NPE.zip'
+    wget http://www.elections.org.za/content/uploadedfiles/1999%20NPE.zip
+    unzip '1999 NPE.zip'
+
+Now, build the database with:
+
+    cd ..
+    python rebuild_db.py
+
+### Deploy instructions
+
+TODO: add deploy instructions
+
+### Maintenance
+
+TODO: location of logs, how to restart service, etc.

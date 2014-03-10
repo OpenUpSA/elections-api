@@ -7,3 +7,12 @@ fabdefs.py
 server/static
 local.py
 production.py
+
+.idea/
+env
+debug.log
+*/config_private.py
+fabdefs.py
+
+election_results/
+*tmp.db
