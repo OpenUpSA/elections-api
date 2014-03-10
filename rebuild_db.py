@@ -169,7 +169,6 @@ def parse_data_2009(result_list, event_desc):
                 meta[key] += val
         # update country-wide results from province data
         results = data_dict[province]['results']
-
         counts = data_dict['country']['results']['vote_count']
         meta = data_dict['country']['results']['meta']
         for party_name, vote_count in results['vote_count'].iteritems():
@@ -197,7 +196,7 @@ def store_data_2009(data_dict_national, data_dict_provincial, year):
     )
     db.session.add(tmp)
 
-    # provincial aggergate
+    # provincial aggregate
     for province, province_id in province_keys.iteritems():
         tmp = Province(
             province_id=province_id,
@@ -250,7 +249,7 @@ def parse_data_old(result_list, event_desc):
 
     """
 
-    data_dict = {}
+    data_dict = {'country': {'results': {'meta': {}, 'vote_count': {}}, 'wards': {}}}
 
     for row in result_list:
 
@@ -293,7 +292,7 @@ def parse_data_old(result_list, event_desc):
                 }
 
     # update parents with child results
-    for province in data_dict.keys():
+    for province, province_id in province_keys.iteritems():
         for municipality in data_dict[province]['municipalities'].keys():
             for voting_district in data_dict[province]['municipalities'][municipality]['voting_districts'].keys():
                 # update municipality results from voting district data
@@ -320,17 +319,36 @@ def parse_data_old(result_list, event_desc):
                 if not meta.get(key):
                     meta[key] = 0
                 meta[key] += val
+        # update country-wide results from province data
+        results = data_dict[province]['results']
+        counts = data_dict['country']['results']['vote_count']
+        meta = data_dict['country']['results']['meta']
+        for party_name, vote_count in results['vote_count'].iteritems():
+            if not counts.get(party_name):
+                counts[party_name] = 0
+            counts[party_name] += vote_count
+        for key, val in results['meta'].iteritems():
+            if not meta.get(key):
+                meta[key] = 0
+            meta[key] += val
 
     return data_dict
 
 
-def store_data_old(data_dict_national, data_dict_provincial, models, year):
+def store_data_old(data_dict_national, data_dict_provincial, year):
     """
     Store given data to the database.
     """
 
-    (Province, Municipality, VotingDistrict) = models
+    # country-wide aggregate
+    tmp = Country(
+        year=year,
+        results_national=json.dumps(data_dict_national['country']['results']),
+        results_provincial=json.dumps(data_dict_provincial['country']['results'])
+    )
+    db.session.add(tmp)
 
+    # provincial aggregate
     for province, province_id in province_keys.iteritems():
         tmp = Province(
             province_id=province_id,
@@ -339,6 +357,7 @@ def store_data_old(data_dict_national, data_dict_provincial, models, year):
             results_provincial=json.dumps(data_dict_provincial[province]['results'])
         )
         db.session.add(tmp)
+        # municipal aggregate
         for municipality in data_dict_national[province]['municipalities'].keys():
             if municipality != 'NULL' and not "OUT OF COUNTRY" in municipality:
                 municipality_code = municipality.split(" ")[0]
@@ -350,6 +369,7 @@ def store_data_old(data_dict_national, data_dict_provincial, models, year):
                     results_provincial=json.dumps(data_dict_provincial[province]['municipalities'][municipality]['results'])
                 )
                 db.session.add(tmp2)
+                # voting districts
                 for voting_district in data_dict_national[province]['municipalities'][municipality]['voting_districts'].keys():
                     tmp4 = VotingDistrict(
                         province=tmp,
@@ -378,34 +398,30 @@ if __name__ == "__main__":
     store_data_2009(data_dict_national, data_dict_provincial, 2009)
     db.session.commit()
 
-    #
-    # # 2004
-    # # --------------------------------------------------------------------------
-    # headings, result_list = read_data('election_results/2004 NPE.csv')
-    # data_dict_national = parse_data_old(result_list, '14 APR 2004 NATIONAL ELECTION')
-    # data_dict_provincial = parse_data_old(result_list, "14 APR 2004 PROVINCIAL ELECTION")
-    #
-    # models = [Province, Municipality, VotingDistrict]
-    #
-    # print "\nNational 2004"
-    # print(json.dumps(data_dict_national['EASTERN CAPE']['results'], indent=4))
-    # print "\nProvincial 2004"
-    # print(json.dumps(data_dict_provincial['EASTERN CAPE']['results'], indent=4))
-    # store_data_old(data_dict_national, data_dict_provincial, models, 2004)
-    # db.session.commit()
-    #
-    #
-    # # 1999
-    # # --------------------------------------------------------------------------
-    # headings, result_list = read_data('election_results/1999 NPE.csv')
-    # data_dict_national = parse_data_old(result_list, 'NATIONAL ELECTIONS 1999')
-    # data_dict_provincial = parse_data_old(result_list, "PROVINCIAL ELECTIONS 1999")
-    #
-    # models = [Province, Municipality, VotingDistrict]
-    #
-    # print "\nNational 1999"
-    # print(json.dumps(data_dict_national['EASTERN CAPE']['results'], indent=4))
-    # print "\nProvincial 1999"
-    # print(json.dumps(data_dict_provincial['EASTERN CAPE']['results'], indent=4))
-    # store_data_old(data_dict_national, data_dict_provincial, models, 1999)
-    # db.session.commit()
+
+    # 2004
+    # --------------------------------------------------------------------------
+    headings, result_list = read_data('election_results/2004 NPE.csv')
+    data_dict_national = parse_data_old(result_list, '14 APR 2004 NATIONAL ELECTION')
+    data_dict_provincial = parse_data_old(result_list, "14 APR 2004 PROVINCIAL ELECTION")
+
+    print "\nNational 2004"
+    print(json.dumps(data_dict_national['EASTERN CAPE']['results'], indent=4))
+    print "\nProvincial 2004"
+    print(json.dumps(data_dict_provincial['EASTERN CAPE']['results'], indent=4))
+    store_data_old(data_dict_national, data_dict_provincial, 2004)
+    db.session.commit()
+
+
+    # 1999
+    # --------------------------------------------------------------------------
+    headings, result_list = read_data('election_results/1999 NPE.csv')
+    data_dict_national = parse_data_old(result_list, 'NATIONAL ELECTIONS 1999')
+    data_dict_provincial = parse_data_old(result_list, "PROVINCIAL ELECTIONS 1999")
+
+    print "\nNational 1999"
+    print(json.dumps(data_dict_national['EASTERN CAPE']['results'], indent=4))
+    print "\nProvincial 1999"
+    print(json.dumps(data_dict_provincial['EASTERN CAPE']['results'], indent=4))
+    store_data_old(data_dict_national, data_dict_provincial, 1999)
+    db.session.commit()
