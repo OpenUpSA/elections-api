@@ -12,8 +12,9 @@ def serialize_area(area_obj):
         out.pop('municipality_pk')
         out['municipality'] = area_obj.municipality.municipality_id
 
-    if hasattr(area_obj, 'ward') and area_obj.ward is not None:
+    if hasattr(area_obj, 'ward'):
         out.pop('ward_pk')
-        out['ward'] = area_obj.ward.ward_id
+        if area_obj.ward is not None:
+            out['ward'] = area_obj.ward.ward_id
 
     return out
