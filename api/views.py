@@ -105,7 +105,14 @@ def results_overall(event_type, year):
     event_type = validate_event_type(event_type)
     year = validate_year(year)
     out = {}
-    out['results'] = []  # the overall results
+
+    item = Country.query.filter(Country.year==year).first()
+    results = [serialize_area(item), ]
+    if len(results) == 0:
+        raise ApiException(404, "Not Found")
+
+    out['results'] = results  # the overall results
+
     for area in areas:
         if area != 'ward' or year >= 2009:
             out[area] = request.url_root + event_type + "/" + str(year) + "/" + area + "/"
