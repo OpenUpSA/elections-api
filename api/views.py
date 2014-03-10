@@ -107,7 +107,7 @@ def results_overall(event_type, year):
     out = {}
 
     item = Country.query.filter(Country.year==year).first()
-    results = [serialize_area(item), ]
+    results = [serialize_area(item, event_type), ]
     if len(results) == 0:
         raise ApiException(404, "Not Found")
 
@@ -177,7 +177,7 @@ def results_by_area(event_type, year, area, area_id=None):
 
     if area_id:
         out = models[area][0].query.filter(models[area][1] == area_id).first()
-        out = serialize_area(out)
+        out = serialize_area(out, event_type)
     else:
         if filter_area and filter_id:
             logger.debug("filtering: " + filter_area + " - " + filter_id)
@@ -195,7 +195,7 @@ def results_by_area(event_type, year, area, area_id=None):
             next = request.url_root + event_type + "/" + str(year) + "/" + area + "/?page=" + str(page+1)
         results = []
         for item in items:
-            results.append(serialize_area(item))
+            results.append(serialize_area(item, event_type))
         if len(results) == 0:
             raise ApiException(404, "Not Found")
         out = {

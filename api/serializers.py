@@ -1,5 +1,5 @@
 
-def serialize_area(area_obj):
+def serialize_area(area_obj, event_type):
 
     out = area_obj.as_dict()
     out.pop('pk')  # suppress the record's primary key
@@ -16,5 +16,14 @@ def serialize_area(area_obj):
         out.pop('ward_pk')
         if area_obj.ward is not None:
             out['ward'] = area_obj.ward.ward_id
+
+    if event_type == 'provincial':
+        out.pop('results_national')
+        out['results'] = out['results_provincial']
+        out.pop('results_provincial')
+    else:
+        out.pop('results_provincial')
+        out['results'] = out['results_national']
+        out.pop('results_national')
 
     return out
