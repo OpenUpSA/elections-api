@@ -107,3 +107,22 @@ class Province(db.Model):
 
     def as_dict(self):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+
+
+class Country(db.Model):
+
+    __tablename__ = 'country'
+
+    # columns
+    pk = Column(Integer, primary_key=True)
+    year = Column(Integer, nullable=False)
+    results_provincial = Column(String)
+    results_national = Column(String)
+
+    def __repr__(self):
+        return "<Country(pk='%s', year='%s')>" % (
+            str(self.pk), str(self.year))
+
+    def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}

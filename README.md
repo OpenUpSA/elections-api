@@ -126,4 +126,17 @@ TODO: add deploy instructions
 
 ### Maintenance
 
-TODO: location of logs, how to restart service, etc.
+To restart the application on a server, use the fabric script:
+
+    fab my_server restart
+
+Logs can be found at:
+
+    * Flask
+
+        /path/to/project_dir/debug.log
+
+    * Nginx:
+
+        /var/log/nginx/error.log
+        /var/log/nginx/access.log
