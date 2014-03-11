@@ -16,20 +16,13 @@ Requests to the API should take the following form:
 
     http://iec-v2.code4sa.org/<event_type>/<year>/<area>/<id>/?<filter_args>
 
-For example,
-
-    http://iec-v2.code4sa.org/national/2009/ward/21002004/
-
+For example, http://iec-v2.code4sa.org/national/2009/ward/21002004/
 retrieves the results for a specific ward in the national elections of 2009.
-If the ward's ID is left out
 
-    http://iec-v2.code4sa.org/national/2009/ward/
+If the ward's ID is left out: http://iec-v2.code4sa.org/national/2009/ward/ the API will respond with a list of all the known wards, which can be paged through.
 
-then the API will respond with a list of all the known wards, which can be paged through.
-But for a quicker way of targeting a specific area's results, an optional filter argument can be included. This can
-narrow down the search to a province, municipality, or ward of interest, e.g.
-
-    http://iec-v2.code4sa.org/national/2009/ward/?municipality=EC102
+For a quicker way of targeting a specific area's results, an optional filter argument can be included. This can
+narrow down the search to a province, municipality, or ward of interest, e.g. http://iec-v2.code4sa.org/national/2009/ward/?municipality=EC102
 
 ### Available endpoints
 
