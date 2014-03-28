@@ -38,6 +38,14 @@ def handle_api_exception(error):
 
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
+    response.headers['Access-Control-Allow-Origin'] = "*"
+    return response
+
+
+def send_api_response(data_dict):
+
+    response = jsonify(data_dict)
+    response.headers['Access-Control-Allow-Origin'] = "*"
     return response
 
 
@@ -80,7 +88,7 @@ def index_event_types():
     out = {}
     for event_type in event_types:
         out[event_type] = request.url_root + event_type + "/"
-    return jsonify(out)
+    return send_api_response(out)
 
 
 @app.route('/<event_type>/')
@@ -93,7 +101,7 @@ def index_years(event_type):
     out = {}
     for year in years:
         out[year] = request.url_root + event_type + "/" + str(year) + "/"
-    return jsonify(out)
+    return send_api_response(out)
 
 
 @app.route('/<event_type>/<year>/')
@@ -112,7 +120,7 @@ def results_overall(event_type, year):
     for area in areas:
         if area != 'ward' or year >= 2009:
             out[area] = request.url_root + event_type + "/" + str(year) + "/" + area + "/"
-    return jsonify(out)
+    return send_api_response(out)
 
 
 @app.route('/<event_type>/<year>/<area>/')
@@ -216,4 +224,4 @@ def results_by_area(event_type, year, area, area_id=None):
             'next': next,
             'results': results
         }
-    return jsonify(out)
+    return send_api_response(out)
