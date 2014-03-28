@@ -1,11 +1,9 @@
 from api import app, logger, db
-from flask import jsonify, request, make_response, render_template, redirect, current_app
+from flask import jsonify, request, make_response, render_template, redirect
 from models import *
 from serializers import serialize_area
 import json
 import time
-from datetime import timedelta 
-from functools import update_wrapper
 from sqlalchemy.sql import func
 
 HOST = app.config['HOST']
@@ -14,46 +12,6 @@ event_types = ["provincial", "national"]
 years = [1999, 2004, 2009]
 areas = ["province", "municipality", "ward", "voting_district"]
 
-def crossdomain(origin=None, methods=None, headers=None,
-                max_age=21600, attach_to_all=True,
-                automatic_options=True):
-    if methods is not None:
-        methods = ', '.join(sorted(x.upper() for x in methods))
-    if headers is not None and not isinstance(headers, basestring):
-        headers = ', '.join(x.upper() for x in headers)
-    if not isinstance(origin, basestring):
-        origin = ', '.join(origin)
-    if isinstance(max_age, timedelta):
-        max_age = max_age.total_seconds()
-
-    def get_methods():
-        if methods is not None:
-            return methods
-
-        options_resp = current_app.make_default_options_response()
-        return options_resp.headers['allow']
-
-    def decorator(f):
-        def wrapped_function(*args, **kwargs):
-            if automatic_options and request.method == 'OPTIONS':
-                resp = current_app.make_default_options_response()
-            else:
-                resp = make_response(f(*args, **kwargs))
-            if not attach_to_all and request.method != 'OPTIONS':
-                return resp
-
-            h = resp.headers
-
-            h['Access-Control-Allow-Origin'] = origin
-            h['Access-Control-Allow-Methods'] = get_methods()
-            h['Access-Control-Max-Age'] = str(max_age)
-            if headers is not None:
-                h['Access-Control-Allow-Headers'] = headers
-            return resp
-
-        f.provide_automatic_options = False
-        return update_wrapper(wrapped_function, f)
-    return decorator
 
 class ApiException(Exception):
     """
@@ -80,6 +38,14 @@ def handle_api_exception(error):
 
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
+    response.headers['Access-Control-Allow-Origin'] = "*"
+    return response
+
+
+def send_api_response(data_dict):
+
+    response = jsonify(data_dict)
+    response.headers['Access-Control-Allow-Origin'] = "*"
     return response
 
 
@@ -114,7 +80,6 @@ def validate_area(area):
 
 
 @app.route('/')
-@crossdomain(origin='*')
 def index_event_types():
     """
     Landing page. Return links to available event_types.
@@ -123,11 +88,10 @@ def index_event_types():
     out = {}
     for event_type in event_types:
         out[event_type] = request.url_root + event_type + "/"
-    return jsonify(out)
+    return send_api_response(out)
 
 
 @app.route('/<event_type>/')
-@crossdomain(origin='*')
 def index_years(event_type):
     """
     Return links to available years.
@@ -137,11 +101,10 @@ def index_years(event_type):
     out = {}
     for year in years:
         out[year] = request.url_root + event_type + "/" + str(year) + "/"
-    return jsonify(out)
+    return send_api_response(out)
 
 
 @app.route('/<event_type>/<year>/')
-@crossdomain(origin='*')
 def results_overall(event_type, year):
     """
     Return overall national results, with links to available areas.
@@ -157,12 +120,11 @@ def results_overall(event_type, year):
     for area in areas:
         if area != 'ward' or year >= 2009:
             out[area] = request.url_root + event_type + "/" + str(year) + "/" + area + "/"
-    return jsonify(out)
+    return send_api_response(out)
 
 
 @app.route('/<event_type>/<year>/<area>/')
 @app.route('/<event_type>/<year>/<area>/<area_id>/')
-@crossdomain(origin='*')
 def results_by_area(event_type, year, area, area_id=None):
     """
     Return results for the specified area, with links to available parent areas where applicable.
@@ -262,4 +224,4 @@ def results_by_area(event_type, year, area, area_id=None):
             'next': next,
             'results': results
         }
-    return jsonify(out)
+    return send_api_response(out)
