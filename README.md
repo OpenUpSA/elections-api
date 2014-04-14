@@ -4,7 +4,7 @@ The Code4SA Elections API provides a machine-readable dataset sourced from the E
 
 This page will discuss what data are available, how you're allowed to use our API, and show some examples of this API being used in the wild. It does not go into the technical details of how to access the API.
 
-If you are a developer and you'd like to dive into the code, go straight to the documenation or examples pages.
+If you are a developer and you'd like to dive into the code, go straight to the [Developers Guide](DEVELOPERS_GUIDE.md) or [Installation documentation](INSTALLATION.md).
 
 The goal is to make the election results more accessible by giving developers a simple way of
 including this data in their own applications.
