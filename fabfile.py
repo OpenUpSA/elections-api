@@ -55,9 +55,6 @@ def setup():
     Install dependencies and create an application directory.
     """
 
-    with settings(warn_only=True):
-        sudo('service nginx stop')
-
     # install packages
     sudo('apt-get install build-essential python python-dev')
     sudo('apt-get install python-pip supervisor')
@@ -86,9 +83,12 @@ def setup():
     sudo('apt-get install nginx')
     # restart nginx after reboot
     sudo('update-rc.d nginx defaults')
-    sudo('service nginx start')
 
     set_permissions()
+
+    with settings(warn_only=True):
+        sudo('service nginx start')
+
     return
 
 
