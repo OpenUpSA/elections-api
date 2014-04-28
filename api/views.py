@@ -156,6 +156,10 @@ def results_by_area(event_type, year, area, area_id=None):
             page = int(request.args.get('page'))
         except ValueError:
             raise ApiException(422, "Please specify a valid 'page'.")
+    
+    all_results = False
+    if request.args.get('all_results'):
+        all_results = True
 
     models = {
         "province": (Province, Province.province_id),
@@ -190,10 +194,16 @@ def results_by_area(event_type, year, area, area_id=None):
             if obj is None:
                 raise ApiException(404, "Could not find the specified filter. Check that you have provided a valid ID, or remove the filter.")
             count = models[area][0].query.filter(models[area][0].year==year).filter(model_filters[area][filter_area]==obj).count()
-            items = models[area][0].query.filter(models[area][0].year==year).filter(model_filters[area][filter_area]==obj).order_by(models[area][1]).limit(per_page).offset(page*per_page).all()
+            if (all_results):
+                items = models[area][0].query.filter(models[area][0].year==year).filter(model_filters[area][filter_area]==obj).order_by(models[area][1]).all()
+            else:
+                items = models[area][0].query.filter(models[area][0].year==year).filter(model_filters[area][filter_area]==obj).order_by(models[area][1]).limit(per_page).offset(page*per_page).all()
         else:
             count = models[area][0].query.filter(models[area][0].year==year).count()
-            items = models[area][0].query.filter(models[area][0].year==year).order_by(models[area][1]).limit(per_page).offset(page*per_page).all()
+            if (all_results):
+                items = models[area][0].query.filter(models[area][0].year==year).order_by(models[area][1]).all()
+            else:
+                items = models[area][0].query.filter(models[area][0].year==year).order_by(models[area][1]).limit(per_page).offset(page*per_page).all()
         next = None
         if count > (page + 1) * per_page:
             next = request.url_root + event_type + "/" + str(year) + "/" + area + "/?page=" + str(page+1)
