@@ -3,14 +3,16 @@ from flask.ext.admin import Admin, AdminIndexView, expose, helpers
 from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.admin.model.template import macro
 from wtforms.fields import SelectField, TextAreaField
-from flask.ext.admin.form import rules
 from wtforms import form, fields, validators
 from flask import request, url_for, redirect, flash
 from flask.ext import login
-from sqlalchemy import func
-
+import jinja2
 from api import db
 from models import User, VotingDistrict, Ward, Municipality, Province
+import json
+
+environment = app.jinja_env
+environment.filters['parse_json'] = json.loads
 
 # Define login and registration forms (for flask-login)
 class LoginForm(form.Form):
@@ -49,6 +51,26 @@ class MyModelView(ModelView):
     can_edit = True
     can_delete = True
     page_size = 50
+
+    form_overrides = {
+        'results_national': TextAreaField,
+        'results_provincial': TextAreaField
+    }
+    form_widget_args = {
+        'results_national': {
+            'rows': 15,
+            'class': "input-xxlarge"
+        },
+        'results_provincial': {
+            'rows': 15,
+            'class': "input-xxlarge"
+        },
+    }
+    list_template = 'admin/custom_list_template.html'
+    column_formatters = {
+        'results_national': macro('render_results'),
+        'results_provincial': macro('render_results')
+    }
 
     def is_accessible(self):
         return login.current_user.is_authenticated()

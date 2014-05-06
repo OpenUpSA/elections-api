@@ -120,8 +120,8 @@ class Province(db.Model):
     Index('province_year_id_ix', year, province_id, unique=True)
 
     def __repr__(self):
-        return "<Province(pk='%s', year='%s', province_id='%s')>" % (
-            str(self.pk), str(self.year), str(self.province_id))
+        return "%s (%s)" % (
+            str(self.province_id), str(self.year))
 
     def as_dict(self):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
