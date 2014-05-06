@@ -2,6 +2,8 @@ import json
 import csv
 from api.models import *
 from api import db
+import urllib2
+
 db.drop_all()
 db.create_all()
 
@@ -124,6 +126,7 @@ def parse_data_2009(result_list, event_desc):
                 'spoilt_votes': spoilt_votes,
                 'section_24a_votes': section_24a_votes,
                 'num_registered': num_registered,
+                'vote_complete': 100,
                 }
 
     # update parents with child results
@@ -143,6 +146,7 @@ def parse_data_2009(result_list, event_desc):
                         if not meta.get(key):
                             meta[key] = 0
                         meta[key] += val
+                    meta['vote_complete'] = 100
                 # update municipality results from ward data
                 results = data_dict[province]['municipalities'][municipality]['wards'][ward]['results']
                 counts = data_dict[province]['municipalities'][municipality]['results']['vote_count']
@@ -155,6 +159,7 @@ def parse_data_2009(result_list, event_desc):
                     if not meta.get(key):
                         meta[key] = 0
                     meta[key] += val
+                meta['vote_complete'] = 100
             # update province results from municipality data
             results = data_dict[province]['municipalities'][municipality]['results']
             counts = data_dict[province]['results']['vote_count']
@@ -167,6 +172,7 @@ def parse_data_2009(result_list, event_desc):
                 if not meta.get(key):
                     meta[key] = 0
                 meta[key] += val
+            meta['vote_complete'] = 100
         # update country-wide results from province data
         results = data_dict[province]['results']
         counts = data_dict['country']['results']['vote_count']
@@ -179,6 +185,7 @@ def parse_data_2009(result_list, event_desc):
             if not meta.get(key):
                 meta[key] = 0
             meta[key] += val
+        meta['vote_complete'] = 100
 
     return data_dict
 
@@ -192,7 +199,7 @@ def store_data_2009(data_dict_national, data_dict_provincial, year):
     tmp = Country(
         year=year,
         results_national=json.dumps(data_dict_national['country']['results']),
-        results_provincial=json.dumps(data_dict_provincial['country']['results'])
+        results_provincial=json.dumps(data_dict_provincial['country']['results']),
     )
     db.session.add(tmp)
 
@@ -202,7 +209,7 @@ def store_data_2009(data_dict_national, data_dict_provincial, year):
             province_id=province_id,
             year=year,
             results_national=json.dumps(data_dict_national[province]['results']),
-            results_provincial=json.dumps(data_dict_provincial[province]['results'])
+            results_provincial=json.dumps(data_dict_provincial[province]['results']),
         )
         db.session.add(tmp)
         # municipal aggregate
@@ -214,7 +221,7 @@ def store_data_2009(data_dict_national, data_dict_provincial, year):
                     municipality_id=municipality_code,
                     year=year,
                     results_national=json.dumps(data_dict_national[province]['municipalities'][municipality]['results']),
-                    results_provincial=json.dumps(data_dict_provincial[province]['municipalities'][municipality]['results'])
+                    results_provincial=json.dumps(data_dict_provincial[province]['municipalities'][municipality]['results']),
                 )
                 db.session.add(tmp2)
                 # ward aggregate
@@ -226,7 +233,7 @@ def store_data_2009(data_dict_national, data_dict_provincial, year):
                             ward_id=int(ward),
                             year=year,
                             results_national=json.dumps(data_dict_national[province]['municipalities'][municipality]['wards'][ward]['results']),
-                            results_provincial=json.dumps(data_dict_provincial[province]['municipalities'][municipality]['wards'][ward]['results'])
+                            results_provincial=json.dumps(data_dict_provincial[province]['municipalities'][municipality]['wards'][ward]['results']),
                         )
                         db.session.add(tmp3)
                         # voting districts
@@ -238,7 +245,7 @@ def store_data_2009(data_dict_national, data_dict_provincial, year):
                                 voting_district_id=int(voting_district),
                                 year=year,
                                 results_national=json.dumps(data_dict_national[province]['municipalities'][municipality]['wards'][ward]['voting_districts'][voting_district]),
-                                results_provincial=json.dumps(data_dict_provincial[province]['municipalities'][municipality]['wards'][ward]['voting_districts'][voting_district])
+                                results_provincial=json.dumps(data_dict_provincial[province]['municipalities'][municipality]['wards'][ward]['voting_districts'][voting_district]),
                             )
                             db.session.add(tmp4)
     return
@@ -289,6 +296,7 @@ def parse_data_old(result_list, event_desc):
                 'total_votes': total_votes,
                 'spoilt_votes': spoilt_votes,
                 'num_registered': num_registered,
+                'vote_complete': 100,
                 }
 
     # update parents with child results
@@ -307,6 +315,7 @@ def parse_data_old(result_list, event_desc):
                     if not meta.get(key):
                         meta[key] = 0
                     meta[key] += val
+                meta['vote_complete'] = 100
             # update province results from municipality data
             results = data_dict[province]['municipalities'][municipality]['results']
             counts = data_dict[province]['results']['vote_count']
@@ -319,6 +328,7 @@ def parse_data_old(result_list, event_desc):
                 if not meta.get(key):
                     meta[key] = 0
                 meta[key] += val
+            meta['vote_complete'] = 100
         # update country-wide results from province data
         results = data_dict[province]['results']
         counts = data_dict['country']['results']['vote_count']
@@ -331,7 +341,7 @@ def parse_data_old(result_list, event_desc):
             if not meta.get(key):
                 meta[key] = 0
             meta[key] += val
-
+        meta['vote_complete'] = 100
     return data_dict
 
 
@@ -344,7 +354,8 @@ def store_data_old(data_dict_national, data_dict_provincial, year):
     tmp = Country(
         year=year,
         results_national=json.dumps(data_dict_national['country']['results']),
-        results_provincial=json.dumps(data_dict_provincial['country']['results'])
+        results_provincial=json.dumps(data_dict_provincial['country']['results']),
+        # vote_complete = 100
     )
     db.session.add(tmp)
 
@@ -354,7 +365,8 @@ def store_data_old(data_dict_national, data_dict_provincial, year):
             province_id=province_id,
             year=year,
             results_national=json.dumps(data_dict_national[province]['results']),
-            results_provincial=json.dumps(data_dict_provincial[province]['results'])
+            results_provincial=json.dumps(data_dict_provincial[province]['results']),
+            # vote_complete = 100
         )
         db.session.add(tmp)
         # municipal aggregate
@@ -366,7 +378,8 @@ def store_data_old(data_dict_national, data_dict_provincial, year):
                     municipality_id=municipality_code,
                     year=year,
                     results_national=json.dumps(data_dict_national[province]['municipalities'][municipality]['results']),
-                    results_provincial=json.dumps(data_dict_provincial[province]['municipalities'][municipality]['results'])
+                    results_provincial=json.dumps(data_dict_provincial[province]['municipalities'][municipality]['results']),
+                    # vote_complete = 100
                 )
                 db.session.add(tmp2)
                 # voting districts
@@ -377,11 +390,111 @@ def store_data_old(data_dict_national, data_dict_provincial, year):
                         voting_district_id=int(voting_district),
                         year=year,
                         results_national=json.dumps(data_dict_national[province]['municipalities'][municipality]['voting_districts'][voting_district]),
-                        results_provincial=json.dumps(data_dict_provincial[province]['municipalities'][municipality]['voting_districts'][voting_district])
+                        results_provincial=json.dumps(data_dict_provincial[province]['municipalities'][municipality]['voting_districts'][voting_district]),
+                        # vote_complete = 100
                     )
                     db.session.add(tmp4)
     return
 
+def prep_2014():
+    data_dict = {'results': {'meta': {}, 'vote_count': {} } }
+    data_dict["results"]["meta"]["num_registered"] = 0
+    data_dict["results"]["meta"]["turnout_percentage"] = 0
+    data_dict["results"]["meta"]["vote_count"] = 0
+    data_dict["results"]["meta"]["spoilt_votes"] = 0
+    data_dict["results"]["meta"]["total_votes"] = 0
+    data_dict["results"]["meta"]["section_24a_votes"] = 0
+    data_dict["results"]["meta"]["special_votes"] = 0
+    data_dict["results"]["meta"]["vote_complete"] = 0
+    country = Country(
+        year=2014,
+        results_national=json.dumps(data_dict['results']),
+        results_provincial=json.dumps(data_dict['results']),
+    )
+    db.session.add(country)
+    db.session.commit()
+
+    # province = Province(
+    #     year=2014,
+    #     results_national=json.dumps(data_dict['results']),
+    #     results_provincial=json.dumps(data_dict['results']),
+    # )
+    # db.session.add(province)
+    # municipality = Municipality(
+    #     year=2014,
+    #     results_national=json.dumps(data_dict['results']),
+    #     results_provincial=json.dumps(data_dict['results']),
+    # )
+    # db.session.add(municipality)
+    # voting_district = VotingDistrict(
+    #     year=2014,
+    #     results_national=json.dumps(data_dict['results']),
+    #     results_provincial=json.dumps(data_dict['results']),
+    # )
+    # db.session.add(voting_district)
+    # ward = Ward(
+    #     year=2014,
+    #     results_national=json.dumps(data_dict['results']),
+    #     results_provincial=json.dumps(data_dict['results']),
+    # )
+    # db.session.add(ward)
+
+def default_dict():
+    data_dict = {'meta': {}, 'vote_count': {} }
+    data_dict["meta"]["num_registered"] = 0
+    data_dict["meta"]["turnout_percentage"] = 0
+    data_dict["meta"]["vote_count"] = 0
+    data_dict["meta"]["spoilt_votes"] = 0
+    data_dict["meta"]["total_votes"] = 0
+    data_dict["meta"]["section_24a_votes"] = 0
+    data_dict["meta"]["special_votes"] = 0
+    data_dict["meta"]["vote_complete"] = 0
+    return data_dict
+
+def get_deliminations(event_id):
+    url = "http://localhost:8082/delimination/" + str(event_id)
+    jdata = urllib2.urlopen(url).read()
+    provinces =json.loads(jdata)
+    for province in provinces:
+        province_db = Province(
+            year=2014,
+            results_national=json.dumps(default_dict()),
+            results_provincial=json.dumps(default_dict()),
+            province_id=province["ProvinceID"],
+        )
+        db.session.add(province_db)
+    db.session.commit()
+    for province in Province.query.filter_by(year = "2014").all():
+        if (province.province_id != "99"):
+            print url + "/province/" + str(province.province_id)
+            jdata = urllib2.urlopen(url + "/province/" + str(province.province_id)).read()
+            municipalities = json.loads(jdata)
+            for municipality in municipalities:
+                municipality_db = Municipality(
+                    year=2014,
+                    results_national=json.dumps(default_dict()),
+                    results_provincial=json.dumps(default_dict()),
+                    municipality_id=municipality["MunicipalityID"],
+                    province_pk=province.pk
+                )
+                db.session.add(municipality_db)
+        db.session.commit()
+    for municipality in Municipality.query.filter_by(year = "2014").all():
+        province_id = Province.query.filter_by(pk = municipality.province_pk).first().province_id
+        jdata = urllib2.urlopen(url + "/province/" + str(province_id) + "/municipality/" + str(municipality.municipality_id)).read()
+        wards = json.loads(jdata)
+        for ward in wards:
+            ward_db = Ward(
+                year=2014,
+                results_national=json.dumps(default_dict()),
+                results_provincial=json.dumps(default_dict()),
+                municipality_pk=municipality.pk,
+                province_pk=municipality.province_pk,
+                ward_id=ward["WardID"],
+            )
+            db.session.add(ward_db)
+        db.session.commit()
+        # print municipalities
 
 if __name__ == "__main__":
 
@@ -392,9 +505,9 @@ if __name__ == "__main__":
     data_dict_provincial = parse_data_2009(result_list, "22 APR 2009 PROVINCIAL ELECTION")
 
     print "\nNational 2009"
-    print(json.dumps(data_dict_national['EASTERN CAPE']['results'], indent=4))
+    
     print "\nProvincial 2009"
-    print(json.dumps(data_dict_provincial['EASTERN CAPE']['results'], indent=4))
+    
     store_data_2009(data_dict_national, data_dict_provincial, 2009)
     db.session.commit()
 
@@ -425,3 +538,10 @@ if __name__ == "__main__":
     print(json.dumps(data_dict_provincial['EASTERN CAPE']['results'], indent=4))
     store_data_old(data_dict_national, data_dict_provincial, 1999)
     db.session.commit()
+
+    # print "\nPrepping for 2014"
+    # prep_2014()
+
+    # get_deliminations(344)
+
+    
