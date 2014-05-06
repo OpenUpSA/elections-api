@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, Index, Boolean
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Index
 from sqlalchemy.orm import relationship
 from api import db
 
@@ -13,7 +13,6 @@ class VotingDistrict(db.Model):
     year = Column(Integer, nullable=False)
     results_provincial = Column(String)
     results_national = Column(String)
-    vote_complete = Column(Boolean)
     ward_pk = Column(Integer, ForeignKey('wards.pk'))
     municipality_pk = Column(Integer, ForeignKey('municipalities.pk'))
     province_pk = Column(Integer, ForeignKey('provinces.pk'))
@@ -44,7 +43,6 @@ class Ward(db.Model):
     year = Column(Integer, nullable=False)
     results_provincial = Column(String)
     results_national = Column(String)
-    vote_complete = Column(Boolean)
     municipality_pk = Column(Integer, ForeignKey('municipalities.pk'))
     province_pk = Column(Integer, ForeignKey('provinces.pk'))
 
@@ -73,7 +71,6 @@ class Municipality(db.Model):
     year = Column(Integer, nullable=False)
     results_provincial = Column(String)
     results_national = Column(String)
-    vote_complete = Column(Boolean)
     province_pk = Column(Integer, ForeignKey('provinces.pk'))
 
     # associations
@@ -98,7 +95,6 @@ class Province(db.Model):
     pk = Column(Integer, primary_key=True)
     province_id = Column(String, nullable=False)
     year = Column(Integer, nullable=False)
-    vote_complete = Column(Boolean)
     results_provincial = Column(String)
     results_national = Column(String)
 
@@ -123,7 +119,6 @@ class Country(db.Model):
     year = Column(Integer, nullable=False)
     results_provincial = Column(String)
     results_national = Column(String)
-    vote_complete = Column(Boolean)
 
     def __repr__(self):
         return "<Country(pk='%s', year='%s')>" % (
