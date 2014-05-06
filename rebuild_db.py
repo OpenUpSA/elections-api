@@ -2,7 +2,7 @@ import json
 import csv
 from api.models import *
 from api import db
-import urllib2
+import glob
 
 db.drop_all()
 db.create_all()
@@ -397,104 +397,68 @@ def store_data_old(data_dict_national, data_dict_provincial, year):
     return
 
 def prep_2014():
-    data_dict = {'results': {'meta': {}, 'vote_count': {} } }
-    data_dict["results"]["meta"]["num_registered"] = 0
-    data_dict["results"]["meta"]["turnout_percentage"] = 0
-    data_dict["results"]["meta"]["vote_count"] = 0
-    data_dict["results"]["meta"]["spoilt_votes"] = 0
-    data_dict["results"]["meta"]["total_votes"] = 0
-    data_dict["results"]["meta"]["section_24a_votes"] = 0
-    data_dict["results"]["meta"]["special_votes"] = 0
-    data_dict["results"]["meta"]["vote_complete"] = 0
+    empty_dict = { 'meta': { 'num_registered': 0, 'turnout_percentage': 0, 'vote_count': 0, 'spoilt_votes': 0, 'total_votes': 0, 'section_24a_votes': 0, 'special_votes': 0, 'vote_complete': 0 }, 'vote_count': {} }
     country = Country(
         year=2014,
-        results_national=json.dumps(data_dict['results']),
-        results_provincial=json.dumps(data_dict['results']),
+        results_national=json.dumps(empty_dict),
+        results_provincial=json.dumps(empty_dict),
     )
     db.session.add(country)
     db.session.commit()
-
-    # province = Province(
-    #     year=2014,
-    #     results_national=json.dumps(data_dict['results']),
-    #     results_provincial=json.dumps(data_dict['results']),
-    # )
-    # db.session.add(province)
-    # municipality = Municipality(
-    #     year=2014,
-    #     results_national=json.dumps(data_dict['results']),
-    #     results_provincial=json.dumps(data_dict['results']),
-    # )
-    # db.session.add(municipality)
-    # voting_district = VotingDistrict(
-    #     year=2014,
-    #     results_national=json.dumps(data_dict['results']),
-    #     results_provincial=json.dumps(data_dict['results']),
-    # )
-    # db.session.add(voting_district)
-    # ward = Ward(
-    #     year=2014,
-    #     results_national=json.dumps(data_dict['results']),
-    #     results_provincial=json.dumps(data_dict['results']),
-    # )
-    # db.session.add(ward)
-
-def default_dict():
-    data_dict = {'meta': {}, 'vote_count': {} }
-    data_dict["meta"]["num_registered"] = 0
-    data_dict["meta"]["turnout_percentage"] = 0
-    data_dict["meta"]["vote_count"] = 0
-    data_dict["meta"]["spoilt_votes"] = 0
-    data_dict["meta"]["total_votes"] = 0
-    data_dict["meta"]["section_24a_votes"] = 0
-    data_dict["meta"]["special_votes"] = 0
-    data_dict["meta"]["vote_complete"] = 0
-    return data_dict
-
-def get_deliminations(event_id):
-    url = "http://localhost:8082/delimination/" + str(event_id)
-    jdata = urllib2.urlopen(url).read()
-    provinces =json.loads(jdata)
-    for province in provinces:
-        province_db = Province(
-            year=2014,
-            results_national=json.dumps(default_dict()),
-            results_provincial=json.dumps(default_dict()),
-            province_id=province["ProvinceID"],
-        )
-        db.session.add(province_db)
-    db.session.commit()
-    for province in Province.query.filter_by(year = "2014").all():
-        if (province.province_id != "99"):
-            print url + "/province/" + str(province.province_id)
-            jdata = urllib2.urlopen(url + "/province/" + str(province.province_id)).read()
-            municipalities = json.loads(jdata)
-            for municipality in municipalities:
-                municipality_db = Municipality(
-                    year=2014,
-                    results_national=json.dumps(default_dict()),
-                    results_provincial=json.dumps(default_dict()),
-                    municipality_id=municipality["MunicipalityID"],
-                    province_pk=province.pk
-                )
-                db.session.add(municipality_db)
-        db.session.commit()
-    for municipality in Municipality.query.filter_by(year = "2014").all():
-        province_id = Province.query.filter_by(pk = municipality.province_pk).first().province_id
-        jdata = urllib2.urlopen(url + "/province/" + str(province_id) + "/municipality/" + str(municipality.municipality_id)).read()
-        wards = json.loads(jdata)
-        for ward in wards:
-            ward_db = Ward(
+    with open("delims/province.csv", 'Ur') as f:
+        province_csv = csv.DictReader(f, delimiter=',')
+        for province in province_csv:
+            province_db = Province(
                 year=2014,
-                results_national=json.dumps(default_dict()),
-                results_provincial=json.dumps(default_dict()),
-                municipality_pk=municipality.pk,
-                province_pk=municipality.province_pk,
-                ward_id=ward["WardID"],
+                results_national=json.dumps(empty_dict),
+                results_provincial=json.dumps(empty_dict),
+                province_id=province["CODE"],
             )
-            db.session.add(ward_db)
-        db.session.commit()
-        # print municipalities
+            db.session.add(province_db)
+    db.session.commit()
+    with open("delims/municipality.csv", 'Ur') as f:
+        municipality_csv = csv.DictReader(f, delimiter=',')
+        for province in Province.query.filter_by(year = "2014").all():
+            if (province.province_id != "99"):
+                for municipality in municipality_csv:
+                    municipality_db = Municipality(
+                        year=2014,
+                        results_national=json.dumps(empty_dict),
+                        results_provincial=json.dumps(empty_dict),
+                        municipality_id=municipality["CAT_B"],
+                        province_pk=province.pk
+                    )
+                    db.session.add(municipality_db)
+    db.session.commit()
+    with open("delims/ward.csv", 'Ur') as f:
+        ward_csv = csv.DictReader(f, delimiter=',')
+        for municipality in Municipality.query.filter_by(year = "2014").all():
+            for ward in ward_csv:
+                ward_db = Ward(
+                    year=2014,
+                    results_national=json.dumps(empty_dict),
+                    results_provincial=json.dumps(empty_dict),
+                    ward_id=ward["WARD_ID"],
+                    province_pk=municipality.province_pk,
+                    municipality_pk=municipality.pk
+                )
+                db.session.add(ward_db)
+    db.session.commit()
+    with open("delims/voting_district.csv", 'Ur') as f:
+        voting_district_csv = csv.DictReader(f, delimiter=',')
+        for ward in Ward.query.filter_by(year = "2014").all():
+            for voting_district in voting_district_csv:
+                voting_district_db = VotingDistrict(
+                    year=2014,
+                    results_national=json.dumps(empty_dict),
+                    results_provincial=json.dumps(empty_dict),
+                    voting_district_id=voting_district["PKLVDNUMBE"],
+                    province_pk=ward.province_pk,
+                    municipality_pk=ward.municipality_pk,
+                    ward_pk=ward.pk
+                )
+                db.session.add(voting_district_db)
+    db.session.commit()
 
 if __name__ == "__main__":
 
@@ -539,9 +503,8 @@ if __name__ == "__main__":
     store_data_old(data_dict_national, data_dict_provincial, 1999)
     db.session.commit()
 
-    # print "\nPrepping for 2014"
-    # prep_2014()
-
-    # get_deliminations(344)
-
+    # 2014
+    # --------------------------------------------------------------------------
+    print "\nPrepping for 2014"
+    prep_2014()
     

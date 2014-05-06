@@ -1,0 +1,235 @@
+PROVINCE,CATEGORY,CAT2,CAT_B,MUNICNAME,MAP_TITLE,DISTRICT,AREA,Shape_Leng,Shape_Area,MapNo,MUN_CD,Level
+EC,A,Metropolitan Municipality,BUF,Buffalo City,Buffalo City Metropolitan Municipality,BUF,2535.93000000000,4.45822330606,0.24454625582,1,(BUF),1
+EC,B,Local Municipality,EC101,Camdeboo,Camdeboo Local Municipality,DC10,12422.10000000000,7.01792747949,1.19035245321,4,(EC101),1
+EC,B,Local Municipality,EC102,Blue Crane Route,Blue Crane Route Local Municipality,DC10,11068.60000000000,6.68079306227,1.06532653682,5,(EC102),1
+EC,B,Local Municipality,EC103,Ikwezi,Ikwezi Local Municipality,DC10,4562.73000000000,4.02235472906,0.44025658112,6,(EC103),1
+EC,B,Local Municipality,EC104,Makana,Makana Local Municipality,DC10,4375.63000000000,4.73391027982,0.42329144573,7,(EC104),1
+EC,B,Local Municipality,EC105,Ndlambe,Ndlambe Local Municipality,DC10,1840.63000000000,2.77203626208,0.17863923442,8,(EC105),1
+EC,B,Local Municipality,EC106,Sundays River Valley,Sundays River Valley Local Municipality,DC10,5993.52000000000,5.90889625590,0.58161425388,9,(EC106),1
+EC,B,Local Municipality,EC107,Baviaans,Baviaans Local Municipality,DC10,11668.30000000000,6.48753635460,1.12933701894,10,(EC107),1
+EC,B,Local Municipality,EC108,Kouga,Kouga Local Municipality,DC10,2669.82000000000,3.49131388316,0.26024569702,11,(EC108),1
+EC,B,Local Municipality,EC109,Kou-Kamma,Kou-Kamma Local Municipality,DC10,3642.02000000000,4.12665339156,0.35486372174,12,(EC109),1
+EC,B,Local Municipality,EC121,Mbhashe,Mbhashe Local Municipality,DC12,3169.45000000000,4.82726511346,0.30288693711,14,(EC121),1
+EC,B,Local Municipality,EC122,Mnquma,Mnquma Local Municipality,DC12,3270.24000000000,4.29586387291,0.31326760806,15,(EC122),1
+EC,B,Local Municipality,EC123,Great Kei,Great Kei Local Municipality,DC12,1735.99000000000,3.02527274034,0.16687189265,16,(EC123),1
+EC,B,Local Municipality,EC124,Amahlathi,Amahlathi Local Municipality,DC12,4820.22000000000,6.41604153431,0.46246965172,17,(EC124),1
+EC,B,Local Municipality,EC126,Ngqushwa,Ngqushwa Local Municipality,DC12,2240.91000000000,3.64962472117,0.21666343980,18,(EC126),1
+EC,B,Local Municipality,EC127,Nkonkobe,Nkonkobe Local Municipality,DC12,3626.18000000000,4.69853429533,0.34898746481,19,(EC127),1
+EC,B,Local Municipality,EC128,Nxuba,Nxuba Local Municipality,DC12,2731.92000000000,3.41973324987,0.26235053099,20,(EC128),1
+EC,B,Local Municipality,EC131,Inxuba Yethemba,Inxuba Yethemba Local Municipality,DC13,11662.70000000000,7.04720849921,1.11145322471,22,(EC131),1
+EC,B,Local Municipality,EC132,Tsolwana,Tsolwana Local Municipality,DC13,6086.82000000000,5.47905744854,0.57998868419,23,(EC132),1
+EC,B,Local Municipality,EC133,Inkwanca,Inkwanca Local Municipality,DC13,3584.24000000000,3.37504283958,0.34027200661,24,(EC133),1
+EC,B,Local Municipality,EC134,Lukanji,Lukanji Local Municipality,DC13,3812.86000000000,4.45763644762,0.36424688800,25,(EC134),1
+EC,B,Local Municipality,EC135,Intsika Yethu,Intsika Yethu Local Municipality,DC13,2711.14000000000,4.54309393681,0.25859110594,26,(EC135),1
+EC,B,Local Municipality,EC136,Emalahleni,Emalahleni Local Municipality,DC13,3447.20000000000,3.83522537533,0.32758872290,27,(EC136),1
+EC,B,Local Municipality,EC137,Engcobo,Engcobo Local Municipality,DC13,2483.87000000000,3.00382007121,0.23625377015,28,(EC137),1
+EC,B,Local Municipality,EC138,Sakhisizwe,Sakhisizwe Local Municipality,DC13,2354.72000000000,2.95525488031,0.22341338368,29,(EC138),1
+EC,B,Local Municipality,EC141,Elundini,Elundini Local Municipality,DC14,5064.54000000000,4.91289882038,0.47793597314,31,(EC141),1
+EC,B,Local Municipality,EC142,Senqu,Senqu Local Municipality,DC14,7329.42000000000,5.29107126769,0.69125734198,32,(EC142),1
+EC,B,Local Municipality,EC143,Maletswai,Maletswai Local Municipality,DC14,4357.65000000000,4.44493964859,0.41157553084,33,(EC143),1
+EC,B,Local Municipality,EC144,Gariep,Gariep Local Municipality,DC14,8911.06000000000,5.87284026353,0.84143874122,34,(EC144),1
+EC,B,Local Municipality,EC153,Ngquza Hill,Ngquza Hill Local Municipality,DC15,2476.83000000000,3.95765316958,0.23449927971,36,(EC153),1
+EC,B,Local Municipality,EC154,Port St Johns,Port St Johns Local Municipality,DC15,1291.20000000000,2.39396804210,0.12262498312,37,(EC154),1
+EC,B,Local Municipality,EC155,Nyandeni,Nyandeni Local Municipality,DC15,2474.01000000000,3.91092283046,0.23509870634,38,(EC155),1
+EC,B,Local Municipality,EC156,Mhlontlo,Mhlontlo Local Municipality,DC15,2826.09000000000,5.10180986789,0.26747151811,39,(EC156),1
+EC,B,Local Municipality,EC157,King Sabata Dalindyebo,King Sabata Dalindyebo Local Municipality,DC15,3027.37000000000,5.39731379005,0.28819636091,40,(EC157),1
+EC,B,Local Municipality,EC441,Matatiele,Matatiele Local Municipality,DC44,4352.31000000000,4.52529853745,0.40832686346,42,(EC441),1
+EC,B,Local Municipality,EC442,Umzimvubu,Umzimvubu Local Municipality,DC44,2577.23000000000,4.49956097452,0.24284408519,43,(EC442),1
+EC,B,Local Municipality,EC443,Mbizana,Mbizana Local Municipality,DC44,2416.72000000000,3.63053688489,0.22812096590,44,(EC443),1
+EC,B,Local Municipality,EC444,Ntabankulu,Ntabankulu Local Municipality,DC44,1384.96000000000,3.28445055556,0.13077039184,45,(EC444),1
+EC,A,Metropolitan Municipality,NMA,Nelson Mandela Bay,Nelson Mandela Bay Metropolitan Municipality,NMA,1958.91000000000,2.93982830284,0.19072851939,2,(NMA),1
+FS,B,Local Municipality,FS161,Letsemeng,Letsemeng Local Municipality,DC16,9828.58000000000,6.19604032558,0.91320463822,48,(FS161),1
+FS,B,Local Municipality,FS162,Kopanong,Kopanong Local Municipality,DC16,15645.10000000000,7.86945199272,1.46242227430,49,(FS162),1
+FS,B,Local Municipality,FS163,Mohokare,Mohokare Local Municipality,DC16,8775.98000000000,6.25864104119,0.82221708221,50,(FS163),1
+FS,B,Local Municipality,FS164,Naledi,Naledi Local Municipality,DC16,3424.06000000000,4.41964562482,0.31913513782,51,(FS164),1
+FS,B,Local Municipality,FS181,Masilonyana,Masilonyana Local Municipality,DC18,6796.09000000000,5.63079415386,0.62712964188,53,(FS181),1
+FS,B,Local Municipality,FS182,Tokologo,Tokologo Local Municipality,DC18,9325.86000000000,5.05051449301,0.85927993677,54,(FS182),1
+FS,B,Local Municipality,FS183,Tswelopele,Tswelopele Local Municipality,DC18,6524.07000000000,4.91868934426,0.59888171977,55,(FS183),1
+FS,B,Local Municipality,FS184,Matjhabeng,Matjhabeng Local Municipality,DC18,5155.46000000000,5.34201629028,0.47299661751,56,(FS184),1
+FS,B,Local Municipality,FS185,Nala,Nala Local Municipality,DC18,4128.80000000000,4.51558898083,0.37748237416,57,(FS185),1
+FS,B,Local Municipality,FS191,Setsoto,Setsoto Local Municipality,DC19,5966.36000000000,5.70455647701,0.55028003145,59,(FS191),1
+FS,B,Local Municipality,FS192,Dihlabeng,Dihlabeng Local Municipality,DC19,4879.96000000000,4.52370911752,0.44917340041,60,(FS192),1
+FS,B,Local Municipality,FS193,Nketoana,Nketoana Local Municipality,DC19,5611.12000000000,4.64953126683,0.51406450730,61,(FS193),1
+FS,B,Local Municipality,FS194,Maluti a Phofung,Maluti a Phofung Local Municipality,DC19,4337.67000000000,3.80774932788,0.39914913235,62,(FS194),1
+FS,B,Local Municipality,FS195,Phumelela,Phumelela Local Municipality,DC19,8183.43000000000,6.69470026893,0.74856836408,63,(FS195),1
+FS,B,Local Municipality,FS196,Mantsopa,Mantsopa Local Municipality,DC19,4290.59000000000,4.21310084384,0.39780036714,64,(FS196),1
+FS,B,Local Municipality,FS201,Moqhaka,Moqhaka Local Municipality,DC20,7924.56000000000,7.84315591596,0.72375714233,66,(FS201),1
+FS,B,Local Municipality,FS203,Ngwathe,Ngwathe Local Municipality,DC20,7055.01000000000,5.20941222041,0.64316253489,67,(FS203),1
+FS,B,Local Municipality,FS204,Metsimaholo,Metsimaholo Local Municipality,DC20,1717.10000000000,2.78435474848,0.15603530046,68,(FS204),1
+FS,B,Local Municipality,FS205,Mafube,Mafube Local Municipality,DC20,3971.36000000000,3.79232978462,0.36195438940,69,(FS205),1
+FS,A,Metropolitan Municipality,MAN,Mangaung,Mangaung Metropolitan Municipality,MAN,6283.99000000000,6.19615722510,0.58273342264,46,(MAN),1
+GT,A,Metropolitan Municipality,EKU,Ekurhuleni,Ekurhuleni Metropolitan Municipality,EKU,1975.26000000000,2.80570804282,0.17838349431,70,(EKU),1
+GT,B,Local Municipality,GT421,Emfuleni,Emfuleni Local Municipality,DC42,965.89400000000,2.05827901445,0.08754494330,74,(GT421),1
+GT,B,Local Municipality,GT422,Midvaal,Midvaal Local Municipality,DC42,1722.48000000000,3.23549669351,0.15611177947,75,(GT422),1
+GT,B,Local Municipality,GT423,Lesedi,Lesedi Local Municipality,DC42,1484.39000000000,3.08518871121,0.13434825502,76,(GT423),1
+GT,B,Local Municipality,GT481,Mogale City,Mogale City Local Municipality,DC48,1342.16000000000,2.31524619430,0.12099160581,78,(GT481),1
+GT,B,Local Municipality,GT482,Randfontein,Randfontein Local Municipality,DC48,474.89400000000,1.25795045258,0.04288149890,79,(GT482),1
+GT,B,Local Municipality,GT483,Westonaria,Westonaria Local Municipality,DC48,639.82400000000,1.59067525004,0.05787522199,80,(GT483),1
+GT,B,Local Municipality,GT484,Merafong City,Merafong City Local Municipality,DC48,1630.54000000000,2.33644602162,0.14752039830,81,(GT484),1
+GT,A,Metropolitan Municipality,JHB,City of Johannesburg,City of Johannesburg Metropolitan Municipality,JHB,1644.98000000000,3.03130489253,0.14852545305,71,(JHB),1
+GT,A,Metropolitan Municipality,TSH,City of Tshwane,City of Tshwane Metropolitan Municipality,TSH,6297.88000000000,6.35664242503,0.56619933100,72,(TSH),1
+KZN,A,Metropolitan Municipality,ETH,eThekwini,Ethekwini Metropolitan Municipality,ETH,2291.31000000000,3.43548955346,0.21381758880,82,(ETH),1
+KZN,B,Local Municipality,KZN211,Vulamehlo,Vulamehlo Local Municipality,DC21,959.92400000000,2.42979001359,0.08993443128,84,(KZN211),1
+KZN,B,Local Municipality,KZN212,Umdoni,Umdoni Local Municipality,DC21,251.52600000000,1.06783220957,0.02359772113,85,(KZN212),1
+KZN,B,Local Municipality,KZN213,Umzumbe,Umzumbe Local Municipality,DC21,1258.88000000000,2.53986120386,0.11826899828,86,(KZN213),1
+KZN,B,Local Municipality,KZN214,uMuziwabantu,UMuziwabantu Local Municipality,DC21,1089.47000000000,2.74481028762,0.10250552299,87,(KZN214),1
+KZN,B,Local Municipality,KZN215,Ezingoleni,Ezingoleni Local Municipality,DC21,648.07000000000,2.09391400055,0.06104413630,88,(KZN215),1
+KZN,B,Local Municipality,KZN216,Hibiscus Coast,Hibiscus Coast Local Municipality,DC21,839.01800000000,2.58718583877,0.07908007484,89,(KZN216),1
+KZN,B,Local Municipality,KZN221,uMshwathi,uMshwathi Local Municipality,DC22,1817.94000000000,3.18311933251,0.16894544831,91,(KZN221),1
+KZN,B,Local Municipality,KZN222,uMngeni,uMngeni Local Municipality,DC22,1566.52000000000,2.32545334487,0.14566177743,92,(KZN222),1
+KZN,B,Local Municipality,KZN223,Mpofana,Mpofana Local Municipality,DC22,1819.79000000000,3.12879021802,0.16880112414,93,(KZN223),1
+KZN,B,Local Municipality,KZN224,Impendle,Impendle Local Municipality,DC22,1528.19000000000,2.65824427690,0.14224078461,94,(KZN224),1
+KZN,B,Local Municipality,KZN225,The Msunduzi,The Msunduzi Local Municipality,DC22,634.01100000000,1.54876382693,0.05907530313,95,(KZN225),1
+KZN,B,Local Municipality,KZN226,Mkhambathini,Mkhambathini Local Municipality,DC22,890.87600000000,2.77083691003,0.08317273251,96,(KZN226),1
+KZN,B,Local Municipality,KZN227,Richmond,Richmond Local Municipality,DC22,1255.60000000000,2.28133208705,0.11726784689,97,(KZN227),1
+KZN,B,Local Municipality,KZN232,Emnambithi/Ladysmith,Emnambithi/Ladysmith Local Municipality,DC23,2964.84000000000,3.33863390454,0.27303309979,99,(KZN232),1
+KZN,B,Local Municipality,KZN233,Indaka,Indaka Local Municipality,DC23,991.54000000000,1.81221913450,0.09142790522,100,(KZN233),1
+KZN,B,Local Municipality,KZN234,Umtshezi,Umtshezi Local Municipality,DC23,1972.45000000000,2.72288826191,0.18246312615,101,(KZN234),1
+KZN,B,Local Municipality,KZN235,Okhahlamba,Okhahlamba Local Municipality,DC23,3970.98000000000,3.88728132248,0.36684766159,102,(KZN235),1
+KZN,B,Local Municipality,KZN236,Imbabazane,Imbabazane Local Municipality,DC23,1426.31000000000,2.31526959272,0.13221159173,103,(KZN236),1
+KZN,B,Local Municipality,KZN241,Endumeni,Endumeni Local Municipality,DC24,1610.23000000000,2.52472355537,0.14795292941,105,(KZN241),1
+KZN,B,Local Municipality,KZN242,Nqutu,Nqutu Local Municipality,DC24,1962.26000000000,3.64135823697,0.18052146690,106,(KZN242),1
+KZN,B,Local Municipality,KZN244,Msinga,Msinga Local Municipality,DC24,2501.14000000000,3.43507448962,0.23076419205,107,(KZN244),1
+KZN,B,Local Municipality,KZN245,Umvoti,Umvoti Local Municipality,DC24,2515.53000000000,3.96346989201,0.23300109696,108,(KZN245),1
+KZN,B,Local Municipality,KZN252,Newcastle,Newcastle Local Municipality,DC25,1855.29000000000,3.18344898916,0.16980375378,110,(KZN252),1
+KZN,B,Local Municipality,KZN253,Emadlangeni,Emadlangeni Local Municipality,DC25,3539.32000000000,3.87819888992,0.32358084341,111,(KZN253),1
+KZN,B,Local Municipality,KZN254,Dannhauser,Dannhauser Local Municipality,DC25,1515.91000000000,2.87072220763,0.13907510238,112,(KZN254),1
+KZN,B,Local Municipality,KZN261,eDumbe,eDumbe Local Municipality,DC26,1942.76000000000,2.85251132796,0.17738126633,114,(KZN261),1
+KZN,B,Local Municipality,KZN262,uPhongolo,UPhongolo Local Municipality,DC26,3239.19000000000,4.39294413227,0.29579381229,115,(KZN262),1
+KZN,B,Local Municipality,KZN263,Abaqulusi,Abaqulusi Local Municipality,DC26,4184.63000000000,4.18870085833,0.38332185717,116,(KZN263),1
+KZN,B,Local Municipality,KZN265,Nongoma,Nongoma Local Municipality,DC26,2182.11000000000,3.37144276789,0.20002700783,117,(KZN265),1
+KZN,B,Local Municipality,KZN266,Ulundi,Ulundi Local Municipality,DC26,3250.29000000000,4.16610370878,0.29883467868,118,(KZN266),1
+KZN,B,Local Municipality,KZN271,Umhlabuyalingana,Umhlabuyalingana Local Municipality,DC27,4401.61000000000,3.23976423384,0.40089131095,120,(KZN271),1
+KZN,B,Local Municipality,KZN272,Jozini,Jozini Local Municipality,DC27,3442.25000000000,4.20726508158,0.31401128406,121,(KZN272),1
+KZN,B,Local Municipality,KZN273,The Big 5 False Bay,The Big 5 False Bay Local Municipality,DC27,2486.54000000000,3.08702484358,0.22782633798,122,(KZN273),1
+KZN,B,Local Municipality,KZN274,Hlabisa,Hlabisa Local Municipality,DC27,1555.13000000000,2.27633441053,0.14289263295,123,(KZN274),1
+KZN,B,Local Municipality,KZN275,Mtubatuba,Mtubatuba Local Municipality,DC27,1969.84000000000,2.32608724836,0.18118817851,124,(KZN275),1
+KZN,B,Local Municipality,KZN281,Mfolozi,Mfolozi Local Municipality,DC28,1209.98000000000,2.18757296399,0.11156794700,126,(KZN281),1
+KZN,B,Local Municipality,KZN282,uMhlathuze,uMhlathuze Local Municipality,DC28,793.17500000000,1.92183778944,0.07329849988,127,(KZN282),1
+KZN,B,Local Municipality,KZN283,Ntambanana,Ntambanana Local Municipality,DC28,1082.76000000000,2.03790780998,0.09985169545,128,(KZN283),1
+KZN,B,Local Municipality,KZN284,uMlalazi,uMlalazi Local Municipality,DC28,2213.94000000000,3.60172769708,0.20481586126,129,(KZN284),1
+KZN,B,Local Municipality,KZN285,Mthonjaneni,Mthonjaneni Local Municipality,DC28,1085.97000000000,2.43738400207,0.10016399807,130,(KZN285),1
+KZN,B,Local Municipality,KZN286,Nkandla,Nkandla Local Municipality,DC28,1827.58000000000,3.36020195311,0.16868253464,131,(KZN286),1
+KZN,B,Local Municipality,KZN291,Mandeni,Mandeni Local Municipality,DC29,545.48100000000,1.62212612061,0.05056837742,133,(KZN291),1
+KZN,B,Local Municipality,KZN292,KwaDukuza,KwaDukuza Local Municipality,DC29,734.97800000000,2.05621733299,0.06828539263,134,(KZN292),1
+KZN,B,Local Municipality,KZN293,Ndwedwe,Ndwedwe Local Municipality,DC29,1092.89000000000,2.72716555148,0.10160980390,135,(KZN293),1
+KZN,B,Local Municipality,KZN294,Maphumulo,Maphumulo Local Municipality,DC29,895.90900000000,2.37890665012,0.08304453464,136,(KZN294),1
+KZN,B,Local Municipality,KZN431,Ingwe,Ingwe Local Municipality,DC43,1976.20000000000,2.96011583723,0.18456511500,138,(KZN431),1
+KZN,B,Local Municipality,KZN432,Kwa Sani,Kwa Sani Local Municipality,DC43,1851.90000000000,2.60065227606,0.17274085009,139,(KZN432),1
+KZN,B,Local Municipality,KZN433,Greater Kokstad,Greater Kokstad Local Municipality,DC43,2679.82000000000,3.65049577929,0.25130243628,140,(KZN433),1
+KZN,B,Local Municipality,KZN434,Ubuhlebezwe,Ubuhlebezwe Local Municipality,DC43,1604.03000000000,2.47145939034,0.15025142819,141,(KZN434),1
+KZN,B,Local Municipality,KZN435,Umzimkhulu,Umzimkhulu Local Municipality,DC43,2435.47000000000,3.40216644008,0.22836636333,142,(KZN435),1
+LIM,B,Local Municipality,LIM331,Greater Giyani,Greater Giyani Local Municipality,DC33,4171.61000000000,4.67477864933,0.36839945419,144,(LIM331),1
+LIM,B,Local Municipality,LIM332,Greater Letaba,Greater Letaba Local Municipality,DC33,1890.89000000000,2.80781166687,0.16716982875,145,(LIM332),1
+LIM,B,Local Municipality,LIM333,Greater Tzaneen,Greater Tzaneen Local Municipality,DC33,3242.58000000000,3.60724866840,0.28742555979,146,(LIM333),1
+LIM,B,Local Municipality,LIM334,Ba-Phalaborwa,Ba-Phalaborwa Local Municipality,DC33,7461.65000000000,5.24282069493,0.66097191056,147,(LIM334),1
+LIM,B,Local Municipality,LIM335,Maruleng,Maruleng Local Municipality,DC33,3244.30000000000,3.47875255829,0.28855932327,148,(LIM335),1
+LIM,B,Local Municipality,LIM341,Musina,Musina Local Municipality,DC34,7576.83000000000,4.64193494569,0.66463866169,150,(LIM341),1
+LIM,B,Local Municipality,LIM342,Mutale,Mutale Local Municipality,DC34,3886.17000000000,3.31705707384,0.34120168872,151,(LIM342),1
+LIM,B,Local Municipality,LIM343,Thulamela,Thulamela Local Municipality,DC34,5834.25000000000,5.04377914408,0.51358664037,152,(LIM343),1
+LIM,B,Local Municipality,LIM344,Makhado,Makhado Local Municipality,DC34,8299.70000000000,5.60840267442,0.73110626522,153,(LIM344),1
+LIM,B,Local Municipality,LIM351,Blouberg,Blouberg Local Municipality,DC35,9248.12000000000,4.72946734316,0.81426017995,155,(LIM351),1
+LIM,B,Local Municipality,LIM352,Aganang,Aganang Local Municipality,DC35,1880.57000000000,2.42717800063,0.16644489355,156,(LIM352),1
+LIM,B,Local Municipality,LIM353,Molemole,Molemole Local Municipality,DC35,3347.33000000000,3.56575732578,0.29589977850,157,(LIM353),1
+LIM,B,Local Municipality,LIM354,Polokwane,Polokwane Local Municipality,DC35,3765.98000000000,3.42189296608,0.33403244269,158,(LIM354),1
+LIM,B,Local Municipality,LIM355,Lepele-Nkumpi,Lepele-Nkumpi Local Municipality,DC35,3463.45000000000,4.47064195962,0.30794704679,159,(LIM355),1
+LIM,B,Local Municipality,LIM361,Thabazimbi,Thabazimbi Local Municipality,DC36,11190.10000000000,6.86579714084,0.99710297912,161,(LIM361),1
+LIM,B,Local Municipality,LIM362,Lephalale,Lephalale Local Municipality,DC36,13784.20000000000,8.02734324455,1.22014337131,162,(LIM362),1
+LIM,B,Local Municipality,LIM364,Mookgopong,Mookgopong Local Municipality,DC36,5688.85000000000,4.42023076899,0.50693313189,163,(LIM364),1
+LIM,B,Local Municipality,LIM365,Modimolle,Modimolle Local Municipality,DC36,4677.95000000000,4.45349102411,0.41651385547,164,(LIM365),1
+LIM,B,Local Municipality,LIM366,Bela-Bela,Bela-Bela Local Municipality,DC36,3406.20000000000,4.27772273326,0.30448958592,165,(LIM366),1
+LIM,B,Local Municipality,LIM367,Mogalakwena,Mogalakwena Local Municipality,DC36,6166.06000000000,4.94544078169,0.54649788595,166,(LIM367),1
+LIM,B,Local Municipality,LIM471,Ephraim Mogale,Ephraim Mogale Local Municipality,DC47,2011.31000000000,3.08051262020,0.17972156305,168,(LIM471),1
+LIM,B,Local Municipality,LIM472,Elias Motsoaledi,Elias Motsoaledi Local Municipality,DC47,3713.33000000000,3.39971717303,0.33258618551,169,(LIM472),1
+LIM,B,Local Municipality,LIM473,Makhuduthamaga,Makhuduthamaga Local Municipality,DC47,2096.60000000000,2.70282596937,0.18707761269,170,(LIM473),1
+LIM,B,Local Municipality,LIM474,Fetakgomo,Fetakgomo Local Municipality,DC47,1104.53000000000,1.62109148113,0.09831351026,171,(LIM474),1
+LIM,B,Local Municipality,LIM475,Greater Tubatse,Greater Tubatse Local Municipality,DC47,4601.96000000000,4.12831634960,0.41038833351,172,(LIM475),1
+MP,B,Local Municipality,MP301,Albert Luthuli,Albert Luthuli Local Municipality,DC30,5559.40000000000,4.78641197862,0.50144927312,174,(MP301),1
+MP,B,Local Municipality,MP302,Msukaligwa,Msukaligwa Local Municipality,DC30,6015.67000000000,4.84919820376,0.54449357269,175,(MP302),1
+MP,B,Local Municipality,MP303,Mkhondo,Mkhondo Local Municipality,DC30,4882.17000000000,4.52560350404,0.44389751929,176,(MP303),1
+MP,B,Local Municipality,MP304,Pixley Ka Seme,Pixley Ka Seme Local Municipality,DC30,5227.21000000000,4.85953822894,0.47583202051,177,(MP304),1
+MP,B,Local Municipality,MP305,Lekwa,Lekwa Local Municipality,DC30,4585.19000000000,4.86253840823,0.41647989378,178,(MP305),1
+MP,B,Local Municipality,MP306,Dipaleseng,Dipaleseng Local Municipality,DC30,2616.56000000000,3.54615884566,0.23747205117,179,(MP306),1
+MP,B,Local Municipality,MP307,Govan Mbeki,Govan Mbeki Local Municipality,DC30,2954.69000000000,3.38955863379,0.26743359295,180,(MP307),1
+MP,B,Local Municipality,MP311,Victor Khanye,Victor Khanye Local Municipality,DC31,1567.77000000000,2.26075193333,0.14150181893,182,(MP311),1
+MP,B,Local Municipality,MP312,Emalahleni,Emalahleni Local Municipality,DC31,2677.61000000000,2.91551235355,0.24144083904,183,(MP312),1
+MP,B,Local Municipality,MP313,Steve Tshwete,Steve Tshwete Local Municipality,DC31,3976.45000000000,3.76335844535,0.35802028699,184,(MP313),1
+MP,B,Local Municipality,MP314,Emakhazeni,Emakhazeni Local Municipality,DC31,4735.58000000000,4.46655682594,0.42552665868,185,(MP314),1
+MP,B,Local Municipality,MP315,Thembisile,Thembisile Local Municipality,DC31,2384.37000000000,4.27666433391,0.21403100290,186,(MP315),1
+MP,B,Local Municipality,MP316,Dr JS Moroka,Dr JS Moroka Local Municipality,DC31,1416.47000000000,2.54047876479,0.12677304372,187,(MP316),1
+MP,B,Local Municipality,MP321,Thaba Chweu,Thaba Chweu Local Municipality,DC32,5719.07000000000,5.10896522815,0.51169612935,189,(MP321),1
+MP,B,Local Municipality,MP322,Mbombela,Mbombela Local Municipality,DC32,5394.43000000000,4.43433616720,0.48367687806,190,(MP322),1
+MP,B,Local Municipality,MP323,Umjindi,Umjindi Local Municipality,DC32,1745.38000000000,2.03935451229,0.15703017649,191,(MP323),1
+MP,B,Local Municipality,MP324,Nkomazi,Nkomazi Local Municipality,DC32,4786.97000000000,3.44607858544,0.42980446277,192,(MP324),1
+MP,B,Local Municipality,MP325,Bushbuckridge,Bushbuckridge Local Municipality,DC32,10249.70000000000,5.76380104321,0.91341331155,193,(MP325),1
+NW,B,Local Municipality,NW371,Moretele,Moretele Local Municipality,DC37,1378.74000000000,2.36097162654,0.12346049230,195,(NW371),1
+NW,B,,NW372,Local Municipality of Madibeng,Local Municipality of Madibeng Local Municipality,DC37,3839.21000000000,3.93730529601,0.34452975314,196,(NW372),1
+NW,B,Local Municipality,NW373,Rustenburg,Rustenburg Local Municipality,DC37,3423.26000000000,3.01547890946,0.30776471436,197,(NW373),1
+NW,B,Local Municipality,NW374,Kgetlengrivier,Kgetlengrivier Local Municipality,DC37,3973.12000000000,3.16656264442,0.35738444507,198,(NW374),1
+NW,B,Local Municipality,NW375,Moses Kotane,Moses Kotane Local Municipality,DC37,5719.07000000000,4.27655355427,0.51197650333,199,(NW375),1
+NW,B,Local Municipality,NW381,Ratlou,Ratlou Local Municipality,DC38,4883.65000000000,3.91030492405,0.44059568867,201,(NW381),1
+NW,B,Local Municipality,NW382,Tswaing,Tswaing Local Municipality,DC38,5966.25000000000,4.25405903171,0.54071233649,202,(NW382),1
+NW,B,Local Municipality,NW383,Mafikeng,Mafikeng Local Municipality,DC38,3698.44000000000,3.75000907805,0.33312164200,203,(NW383),1
+NW,B,Local Municipality,NW384,Ditsobotla,Ditsobotla Local Municipality,DC38,6464.87000000000,4.45196758352,0.58338626251,204,(NW384),1
+NW,B,Local Municipality,NW385,Ramotshere Moiloa,Ramotshere Moiloa Local Municipality,DC38,7192.88000000000,4.60754382057,0.64431462641,205,(NW385),1
+NW,B,Local Municipality,NW392,Naledi,Naledi Local Municipality,DC39,6941.19000000000,5.55531186947,0.63041078140,207,(NW392),1
+NW,B,Local Municipality,NW393,Mamusa,Mamusa Local Municipality,DC39,3614.84000000000,3.77902889725,0.32933061021,208,(NW393),1
+NW,B,Local Municipality,NW394,Greater Taung,Greater Taung Local Municipality,DC39,5635.47000000000,5.14486376111,0.51469474145,209,(NW394),1
+NW,B,Local Municipality,NW396,Lekwa-Teemane,Lekwa-Teemane Local Municipality,DC39,3681.20000000000,4.11340962265,0.33660746232,210,(NW396),1
+NW,B,Local Municipality,NW397,Kagisano/Molopo,Kagisano/Molopo Local Municipality,DC39,23827.30000000000,10.03637371870,2.15035244411,211,(NW397),1
+NW,B,Local Municipality,NW401,Ventersdorp,Ventersdorp Local Municipality,DC40,3764.05000000000,3.25314334200,0.34024827713,213,(NW401),1
+NW,B,Local Municipality,NW402,Tlokwe City Council,Tlokwe City Council Local Municipality,DC40,2673.68000000000,3.08760060670,0.24256181832,214,(NW402),1
+NW,B,Local Municipality,NW403,City of Matlosana,City of Matlosana Local Municipality,DC40,3561.46000000000,3.09154556690,0.32330689713,215,(NW403),1
+NW,B,Local Municipality,NW404,Maquassi Hills,Maquassi Hills Local Municipality,DC40,4643.05000000000,4.14411011032,0.42306483941,216,(NW404),1
+NC,B,Local Municipality,NC061,Richtersveld,Richtersveld Local Municipality,DC6,9607.68000000000,5.79790048238,0.88769661271,218,(NC061),1
+NC,B,Local Municipality,NC062,Nama Khoi,Nama Khoi Local Municipality,DC6,17988.60000000000,7.12722342523,1.67297426946,219,(NC062),1
+NC,B,Local Municipality,NC064,Kamiesberg,Kamiesberg Local Municipality,DC6,14210.20000000000,7.38885557397,1.33357272063,220,(NC064),1
+NC,B,Local Municipality,NC065,Hantam,Hantam Local Municipality,DC6,36128.10000000000,13.30674385520,3.41314920448,221,(NC065),1
+NC,B,Local Municipality,NC066,Karoo Hoogland,Karoo Hoogland Local Municipality,DC6,32273.90000000000,11.24104204640,3.06893254838,222,(NC066),1
+NC,B,Local Municipality,NC067,Khi-Ma,Khi-Ma Local Municipality,DC6,16627.90000000000,7.15509388011,1.54805486054,223,(NC067),1
+NC,B,Local Municipality,NC071,Ubuntu,Ubuntu Local Municipality,DC7,20389.20000000000,9.91702004176,1.93308253429,225,(NC071),1
+NC,B,Local Municipality,NC072,Umsobomvu,Umsobomvu Local Municipality,DC7,6818.52000000000,4.82391509228,0.64295975527,226,(NC072),1
+NC,B,Local Municipality,NC073,Emthanjeni,Emthanjeni Local Municipality,DC7,13472.30000000000,7.83998196096,1.26816934382,227,(NC073),1
+NC,B,Local Municipality,NC074,Kareeberg,Kareeberg Local Municipality,DC7,17702.00000000000,7.53926457370,1.66410949396,228,(NC074),1
+NC,B,Local Municipality,NC075,Renosterberg,Renosterberg Local Municipality,DC7,5527.15000000000,3.93061481766,0.51807751807,229,(NC075),1
+NC,B,Local Municipality,NC076,Thembelihle,Thembelihle Local Municipality,DC7,8023.07000000000,4.91968165126,0.74798118487,230,(NC076),1
+NC,B,Local Municipality,NC077,Siyathemba,Siyathemba Local Municipality,DC7,14724.80000000000,7.00011772444,1.37182887716,231,(NC077),1
+NC,B,Local Municipality,NC078,Siyancuma,Siyancuma Local Municipality,DC7,16752.80000000000,9.65896046246,1.55098852341,232,(NC078),1
+NC,B,Local Municipality,NC081,Mier,Mier Local Municipality,DC8,22468.40000000000,9.01370191985,2.03364017101,234,(NC081),1
+NC,B,Local Municipality,NC082,Kai !Garib,Kai !Garib Local Municipality,DC8,26358.00000000000,8.64573335722,2.43999635641,235,(NC082),1
+NC,B,Local Municipality,NC083,//Khara Hais,//Khara Hais Local Municipality,DC8,21779.80000000000,7.26945845869,1.99265867035,236,(NC083),1
+NC,B,Local Municipality,NC084,!Kheis,!Kheis Local Municipality,DC8,11107.50000000000,6.42360197241,1.03080340593,237,(NC084),1
+NC,B,Local Municipality,NC085,Tsantsabane,Tsantsabane Local Municipality,DC8,18332.80000000000,8.59012417342,1.68246092792,238,(NC085),1
+NC,B,Local Municipality,NC086,Kgatelopele,Kgatelopele Local Municipality,DC8,2477.93000000000,2.37272653142,0.22777691937,239,(NC086),1
+NC,B,Local Municipality,NC091,Sol Plaatjie,Sol Plaatjie Local Municipality,DC9,3145.39000000000,3.18638201900,0.29054474881,241,(NC091),1
+NC,B,Local Municipality,NC092,Dikgatlong,Dikgatlong Local Municipality,DC9,7314.72000000000,4.64796197903,0.67224175318,242,(NC092),1
+NC,B,Local Municipality,NC093,Magareng,Magareng Local Municipality,DC9,1541.67000000000,2.25929810565,0.14165040927,243,(NC093),1
+NC,B,Local Municipality,NC094,Phokwane,Phokwane Local Municipality,DC9,833.87500000000,1.74218729730,0.07635885466,244,(NC094),1
+NC,B,Local Municipality,NC451,Joe Morolong,Joe Morolong Local Municipality,DC45,20172.00000000000,9.80861133161,1.83165117716,246,(NC451),1
+NC,B,Local Municipality,NC452,Ga-Segonyana,Ga-Segonyana Local Municipality,DC45,4491.64000000000,4.27861799948,0.41066519992,247,(NC452),1
+NC,B,Local Municipality,NC453,Gamagara,Gamagara Local Municipality,DC45,2619.42000000000,2.92659054603,0.23952831601,248,(NC453),1
+WC,A,Metropolitan Municipality,CPT,City of Cape Town,City of Cape Town Metropolitan Municipality,CPT,2439.78000000000,5.19817506151,0.23829667642,249,(CPT),1
+WC,B,Local Municipality,WC011,Matzikama,Matzikama Local Municipality,DC1,12981.40000000000,6.72686031208,1.22926341696,251,(WC011),1
+WC,B,Local Municipality,WC012,Cederberg,Cederberg Local Municipality,DC1,8007.47000000000,5.40975343298,0.76633251404,252,(WC012),1
+WC,B,Local Municipality,WC013,Bergrivier,Bergrivier Local Municipality,DC1,4407.04000000000,3.92385096421,0.42421268123,253,(WC013),1
+WC,B,Local Municipality,WC014,Saldanha Bay,Saldanha Bay Local Municipality,DC1,2015.37000000000,4.78543634986,0.19447393291,254,(WC014),1
+WC,B,Local Municipality,WC015,Swartland,Swartland Local Municipality,DC1,3712.53000000000,4.03109759195,0.35894375347,255,(WC015),1
+WC,B,Local Municipality,WC022,Witzenberg,Witzenberg Local Municipality,DC2,10752.70000000000,5.98068253356,1.03689977851,257,(WC022),1
+WC,B,Local Municipality,WC023,Drakenstein,Drakenstein Local Municipality,DC2,1537.66000000000,2.78870409161,0.14935970718,258,(WC023),1
+WC,B,Local Municipality,WC024,Stellenbosch,Stellenbosch Local Municipality,DC2,831.04500000000,1.72808167439,0.08102797689,259,(WC024),1
+WC,B,Local Municipality,WC025,Breede Valley,Breede Valley Local Municipality,DC2,3833.52000000000,4.66638902167,0.37224980022,260,(WC025),1
+WC,B,Local Municipality,WC026,Langeberg,Langeberg Local Municipality,DC2,4517.70000000000,4.38358001940,0.43979436919,261,(WC026),1
+WC,B,Local Municipality,WC031,Theewaterskloof,Theewaterskloof Local Municipality,DC3,3231.64000000000,3.73892937718,0.31594619204,263,(WC031),1
+WC,B,Local Municipality,WC032,Overstrand,Overstrand Local Municipality,DC3,1707.51000000000,4.45773068324,0.16754483262,264,(WC032),1
+WC,B,Local Municipality,WC033,Cape Agulhas,Cape Agulhas Local Municipality,DC3,3466.60000000000,4.25316246363,0.34025856985,265,(WC033),1
+WC,B,Local Municipality,WC034,Swellendam,Swellendam Local Municipality,DC3,3835.09000000000,6.02802409396,0.37440134856,266,(WC034),1
+WC,B,Local Municipality,WC041,Kannaland,Kannaland Local Municipality,DC4,4758.08000000000,4.09898521383,0.46220675462,268,(WC041),1
+WC,B,Local Municipality,WC042,Hessequa,Hessequa Local Municipality,DC4,5733.49000000000,5.01740560939,0.56036919516,269,(WC042),1
+WC,B,Local Municipality,WC043,Mossel Bay,Mossel Bay Local Municipality,DC4,2010.83000000000,2.92831266516,0.19632230663,270,(WC043),1
+WC,B,Local Municipality,WC044,George,George Local Municipality,DC4,5191.01000000000,4.87896943981,0.50479330098,271,(WC044),1
+WC,B,Local Municipality,WC045,Oudtshoorn,Oudtshoorn Local Municipality,DC4,3537.07000000000,3.84288897955,0.34355508785,272,(WC045),1
+WC,B,Local Municipality,WC047,Bitou,Bitou Local Municipality,DC4,991.86000000000,2.00767966420,0.09672024470,273,(WC047),1
+WC,B,Local Municipality,WC048,Knysna,Knysna Local Municipality,DC4,1108.77000000000,1.65049446238,0.10813140644,274,(WC048),1
+WC,B,Local Municipality,WC051,Laingsburg,Laingsburg Local Municipality,DC5,8784.48000000000,5.50114101550,0.84855054254,276,(WC051),1
+WC,B,Local Municipality,WC052,Prince Albert,Prince Albert Local Municipality,DC5,8152.91000000000,5.11271161032,0.78707954253,277,(WC052),1
+WC,B,Local Municipality,WC053,Beaufort West,Beaufort West Local Municipality,DC5,21916.60000000000,10.86874467200,2.09794452471,278,(WC053),1
