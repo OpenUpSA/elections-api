@@ -71,9 +71,19 @@ class MyModelView(ModelView):
         'results_national': macro('render_results'),
         'results_provincial': macro('render_results')
     }
+    column_filters = ['year', ]
 
     def is_accessible(self):
         return login.current_user.is_authenticated()
+
+
+class MunicipalityView(MyModelView):
+    column_searchable_list = ['municipality_id', ]
+    column_filters = ['year', 'province']
+
+
+class ProvinceView(MyModelView):
+    column_searchable_list = ['province_id', ]
 
 
 # Customized index view that handles login & registration
@@ -146,5 +156,5 @@ init_login()
 
 admin = Admin(app, name='Elections API', base_template='admin/my_master.html', index_view=HomeView(name='Home'))
 
-admin.add_view(MyModelView(Province, db.session))
-admin.add_view(MyModelView(Municipality, db.session))
+admin.add_view(ProvinceView(Province, db.session))
+admin.add_view(MunicipalityView(Municipality, db.session))
