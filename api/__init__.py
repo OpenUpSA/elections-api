@@ -37,3 +37,4 @@ stream_handler.setFormatter(file_formatter)
 logger.addHandler(stream_handler)
 
 import api.views
+import api.admin

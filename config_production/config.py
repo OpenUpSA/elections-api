@@ -7,3 +7,5 @@ DEBUG = True
 HOST = "http://iec-v2.code4sa.org"
 
 SQLALCHEMY_DATABASE_URI = 'sqlite:///../instance/tmp.db'
+
+ADMIN_USER = "admin@code4sa.org"
