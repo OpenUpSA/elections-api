@@ -9,7 +9,7 @@ from sqlalchemy.sql import func
 HOST = app.config['HOST']
 
 event_types = ["provincial", "national"]
-years = [1999, 2004, 2009]
+years = [1999, 2004, 2009, 2014]
 areas = ["province", "municipality", "ward", "voting_district"]
 
 
