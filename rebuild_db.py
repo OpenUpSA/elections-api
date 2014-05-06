@@ -3,6 +3,7 @@ import csv
 from api.models import *
 from api import db
 import glob
+from itertools import chain
 
 db.drop_all()
 db.create_all()
@@ -26,6 +27,9 @@ province_keys = {
     "NORTHERN CAPE": "NC",
     "WESTERN CAPE": "WC",
     }
+
+def flatten_dict_values(dictionary):
+    return chain.from_iterable(dictionary.values())
 
 def encode(str_in):
 
@@ -396,12 +400,27 @@ def store_data_old(data_dict_national, data_dict_provincial, year):
                     db.session.add(tmp4)
     return
 
+def empty_dict(parties):
+    ed = { 'meta': { 'num_registered': 0, 'turnout_percentage': 0, 'vote_count': 0, 'spoilt_votes': 0, 'total_votes': 0, 'section_24a_votes': 0, 'special_votes': 0, 'vote_complete': 0 }, 'vote_count': {} }
+    for party in parties:
+        ed["vote_count"][party] = 0
+    # print ed
+    return(ed)
+
 def prep_2014():
-    empty_dict = { 'meta': { 'num_registered': 0, 'turnout_percentage': 0, 'vote_count': 0, 'spoilt_votes': 0, 'total_votes': 0, 'section_24a_votes': 0, 'special_votes': 0, 'vote_complete': 0 }, 'vote_count': {} }
+   
+    # Get party list
+    parties = { }
+    with open("delims/parties.csv", 'Ur') as f:
+        parties_csv = csv.DictReader(f, delimiter=',')
+        for party in parties_csv:
+            parties[party["province_code"]] = parties.get(party["province_code"], [])
+            if (party["name"] not in parties[party["province_code"]]):
+                parties[party["province_code"]].append(party["name"])
     country = Country(
         year=2014,
-        results_national=json.dumps(empty_dict),
-        results_provincial=json.dumps(empty_dict),
+        results_national=json.dumps(empty_dict(parties["ZA"])),
+        results_provincial=json.dumps(empty_dict(flatten_dict_values(parties))),
     )
     db.session.add(country)
     db.session.commit()
@@ -410,12 +429,13 @@ def prep_2014():
         for province in province_csv:
             province_db = Province(
                 year=2014,
-                results_national=json.dumps(empty_dict),
-                results_provincial=json.dumps(empty_dict),
+                results_national=json.dumps(empty_dict(parties["ZA"])),
+                results_provincial=json.dumps(empty_dict(parties[province["CODE"]])),
                 province_id=province["CODE"],
             )
             db.session.add(province_db)
     db.session.commit()
+    province_dict = {}
     with open("delims/municipality.csv", 'Ur') as f:
         municipality_csv = csv.DictReader(f, delimiter=',')
         for province in Province.query.filter_by(year = "2014").all():
@@ -423,11 +443,12 @@ def prep_2014():
                 for municipality in municipality_csv:
                     municipality_db = Municipality(
                         year=2014,
-                        results_national=json.dumps(empty_dict),
-                        results_provincial=json.dumps(empty_dict),
+                        results_national=json.dumps(empty_dict(parties["ZA"])),
+                        results_provincial=json.dumps(empty_dict(parties[province.province_id])),
                         municipality_id=municipality["CAT_B"],
                         province_pk=province.pk
                     )
+                    province_dict[province.pk] = empty_dict(parties[province.province_id])
                     db.session.add(municipality_db)
     db.session.commit()
     with open("delims/ward.csv", 'Ur') as f:
@@ -436,8 +457,8 @@ def prep_2014():
             for ward in ward_csv:
                 ward_db = Ward(
                     year=2014,
-                    results_national=json.dumps(empty_dict),
-                    results_provincial=json.dumps(empty_dict),
+                    results_national=json.dumps(empty_dict(parties["ZA"])),
+                    results_provincial=json.dumps(province_dict[municipality.province_pk]),
                     ward_id=ward["WARD_ID"],
                     province_pk=municipality.province_pk,
                     municipality_pk=municipality.pk
@@ -450,8 +471,8 @@ def prep_2014():
             for voting_district in voting_district_csv:
                 voting_district_db = VotingDistrict(
                     year=2014,
-                    results_national=json.dumps(empty_dict),
-                    results_provincial=json.dumps(empty_dict),
+                    results_national=json.dumps(empty_dict(parties["ZA"])),
+                    results_provincial=json.dumps(province_dict[ward.province_pk]),
                     voting_district_id=voting_district["PKLVDNUMBE"],
                     province_pk=ward.province_pk,
                     municipality_pk=ward.municipality_pk,
@@ -476,8 +497,8 @@ if __name__ == "__main__":
     db.session.commit()
 
 
-    # 2004
-    # --------------------------------------------------------------------------
+    # # 2004
+    # # --------------------------------------------------------------------------
     headings, result_list = read_data('election_results/2004 NPE.csv')
     data_dict_national = parse_data_old(result_list, '14 APR 2004 NATIONAL ELECTION')
     data_dict_provincial = parse_data_old(result_list, "14 APR 2004 PROVINCIAL ELECTION")
@@ -490,8 +511,8 @@ if __name__ == "__main__":
     db.session.commit()
 
 
-    # 1999
-    # --------------------------------------------------------------------------
+    # # 1999
+    # # --------------------------------------------------------------------------
     headings, result_list = read_data('election_results/1999 NPE.csv')
     data_dict_national = parse_data_old(result_list, 'NATIONAL ELECTIONS 1999')
     data_dict_provincial = parse_data_old(result_list, "PROVINCIAL ELECTIONS 1999")
@@ -507,4 +528,3 @@ if __name__ == "__main__":
     # --------------------------------------------------------------------------
     print "\nPrepping for 2014"
     prep_2014()
-    
