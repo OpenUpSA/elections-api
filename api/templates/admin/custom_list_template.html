@@ -1,0 +1,15 @@
+{% extends 'admin/model/list.html' %}
+
+{% macro render_results(model, column) %}
+{% set results = model[column] | parse_json %}
+<ul class="unstyled">
+    {% for key, value in results.meta.iteritems() %}
+    <li>{{ key }} <span class="pull-right">{{ value }}</span></li>
+    {% endfor %}
+</ul>
+<ul class="unstyled">
+    {% for key, value in results.vote_count.iteritems() %}
+    <li><small>{{ key }} <span class="pull-right">{{ value }}</span></small></li>
+    {% endfor %}
+</ul>
+{% endmacro %}
