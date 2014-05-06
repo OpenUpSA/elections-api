@@ -537,6 +537,7 @@ if __name__ == "__main__":
     print "\nProvincial 1999"
     print(json.dumps(data_dict_provincial['EASTERN CAPE']['results'], indent=4))
     store_data_old(data_dict_national, data_dict_provincial, 1999)
+    db.session.commit()
 
     # print "\nPrepping for 2014"
     # prep_2014()
