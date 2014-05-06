@@ -8,6 +8,9 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True)
     password = db.Column(db.String(64))
 
+    def is_active(self):
+        return True
+
     def is_authenticated(self):
         return True
 

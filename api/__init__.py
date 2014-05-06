@@ -36,5 +36,5 @@ stream_handler.setLevel(LOG_LEVEL)
 stream_handler.setFormatter(file_formatter)
 logger.addHandler(stream_handler)
 
-import api.views
 import api.admin
+import api.views
