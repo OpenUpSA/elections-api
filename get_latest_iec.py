@@ -84,6 +84,7 @@ def download_latest_results(id):
 	calculate_ward(set(ward_queue), dt.tm_year)
 	calculate_municipality(set(municipality_queue), dt.tm_year, id)
 	calculate_province(set(province_queue), dt.tm_year, id)
+	calculate_national(dt.tm_year, id)
 
 def calculate_ward(ward_queue, year):
 	for ward_pk in ward_queue:
@@ -175,6 +176,38 @@ def calculate_province(queue, year, id):
 			query.update({ 'results_provincial': json.dumps(data_dict) })
 		db.session.commit()
 
+def calculate_national(year, id):
+	uri = "http://localhost:8082/result/" + str(id)
+	print uri
+	query = db.session.query(Country).filter(Country.year == year)
+	check_result = query.first()
+	check_field_national = json.loads(check_result.results_national)
+	check_field_provincial = json.loads(check_result.results_provincial)
+	if (int(check_field_national["meta"]["vote_complete"]) + int(check_field_provincial["meta"]["vote_complete"]) < 200):
+		print "Calculating national totals"
+		jdata = urllib2.urlopen(uri).read()
+		data = json.loads(jdata)
+		data_dict = {'meta': {}, 'vote_count': {}}
+		data_dict["meta"]["num_registered"] = data['RegisteredVoters']
+		data_dict["meta"]["turnout_percentage"] = data['PercVoterTurnout']
+		data_dict["meta"]["vote_count"] = data['TotalValidVotes']
+		data_dict["meta"]["spoilt_votes"] = data['SpoiltVotes']
+		data_dict["meta"]["total_votes"] = data['TotalVotesCast']
+		data_dict["meta"]["section_24a_votes"] = data['Section24AVotes']
+		data_dict["meta"]["special_votes"] = data['SpecialVotes']
+		if (data['bResultsComplete']):
+			data_dict["meta"]["vote_complete"] = 100
+		else:
+			data_dict["meta"]["vote_complete"] = round(data['VDWithResultsCaptured'] / data['VDCount'] * 100, 4)
+		for party_data in data["PartyBallotResults"]:
+			data_dict["vote_count"][party_data["Name"]] = party_data["ValidVotes"]
+		if (str(data["ElectoralEvent"]).lower().find("national") > -1):
+			query.update({ 'results_national': json.dumps(data_dict) })
+		else:
+			query.update({ 'results_provincial': json.dumps(data_dict) })
+		db.session.commit()
+
+
 def find_latest_file():
 	# print sys.argv[1]
 	max_time = 0
@@ -247,3 +280,4 @@ if __name__ == "__main__":
 	download_latest_results(292)
 	# test(32862595)
 	# download_latest_results(146)
+	# calculate_national(2014, 291)
