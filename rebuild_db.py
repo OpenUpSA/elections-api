@@ -438,47 +438,51 @@ def prep_2014():
     province_dict = {}
     with open("delims/municipality.csv", 'Ur') as f:
         municipality_csv = csv.DictReader(f, delimiter=',')
-        for province in Province.query.filter_by(year = "2014").all():
+        for municipality in municipality_csv:
+            province = Province.query.filter_by(year = "2014", province_id = municipality["PROVINCE"]).first()
             if (province.province_id != "99"):
-                for municipality in municipality_csv:
-                    municipality_db = Municipality(
-                        year=2014,
-                        results_national=json.dumps(empty_dict(parties["ZA"])),
-                        results_provincial=json.dumps(empty_dict(parties[province.province_id])),
-                        municipality_id=municipality["CAT_B"],
-                        province_pk=province.pk
-                    )
-                    province_dict[province.pk] = empty_dict(parties[province.province_id])
-                    db.session.add(municipality_db)
+                # print municipality
+                municipality_db = Municipality(
+                    year=2014,
+                    results_national=json.dumps(empty_dict(parties["ZA"])),
+                    results_provincial=json.dumps(empty_dict(parties[province.province_id])),
+                    municipality_id=municipality["CAT_B"],
+                    province_pk=province.pk
+                )
+                province_dict[province.pk] = empty_dict(parties[province.province_id])
+                db.session.add(municipality_db)
     db.session.commit()
     with open("delims/ward.csv", 'Ur') as f:
         ward_csv = csv.DictReader(f, delimiter=',')
-        for municipality in Municipality.query.filter_by(year = "2014").all():
-            for ward in ward_csv:
-                ward_db = Ward(
-                    year=2014,
-                    results_national=json.dumps(empty_dict(parties["ZA"])),
-                    results_provincial=json.dumps(province_dict[municipality.province_pk]),
-                    ward_id=ward["WARD_ID"],
-                    province_pk=municipality.province_pk,
-                    municipality_pk=municipality.pk
-                )
-                db.session.add(ward_db)
+        for ward in ward_csv:
+            # print ward
+            municipality = Municipality.query.filter_by(year = "2014", municipality_id = ward["CAT_B"]).first()
+            ward_db = Ward(
+                year=2014,
+                results_national=json.dumps(empty_dict(parties["ZA"])),
+                results_provincial=json.dumps(province_dict[municipality.province_pk]),
+                ward_id=ward["WARD_ID"],
+                province_pk=municipality.province_pk,
+                municipality_pk=municipality.pk
+            )
+            db.session.add(ward_db)
     db.session.commit()
     with open("delims/voting_district.csv", 'Ur') as f:
         voting_district_csv = csv.DictReader(f, delimiter=',')
-        for ward in Ward.query.filter_by(year = "2014").all():
-            for voting_district in voting_district_csv:
-                voting_district_db = VotingDistrict(
-                    year=2014,
-                    results_national=json.dumps(empty_dict(parties["ZA"])),
-                    results_provincial=json.dumps(province_dict[ward.province_pk]),
-                    voting_district_id=voting_district["PKLVDNUMBE"],
-                    province_pk=ward.province_pk,
-                    municipality_pk=ward.municipality_pk,
-                    ward_pk=ward.pk
-                )
-                db.session.add(voting_district_db)
+        for voting_district in voting_district_csv:
+            ward = Ward.query.filter_by(year = "2014", ward_id = voting_district["FKLWARDID"]).first()
+            # print voting_district
+            # return 1
+            voting_district_db = VotingDistrict(
+                year=2014,
+                results_national=json.dumps(empty_dict(parties["ZA"])),
+                results_provincial=json.dumps(province_dict[ward.province_pk]),
+                voting_district_id=voting_district["PKLVDNUMBE"],
+                province_pk=ward.province_pk,
+                municipality_pk=ward.municipality_pk,
+                ward_pk=ward.pk
+            )
+            db.session.add(voting_district_db)
     db.session.commit()
 
 if __name__ == "__main__":
@@ -497,32 +501,32 @@ if __name__ == "__main__":
     db.session.commit()
 
 
-    # # 2004
-    # # --------------------------------------------------------------------------
-    headings, result_list = read_data('election_results/2004 NPE.csv')
-    data_dict_national = parse_data_old(result_list, '14 APR 2004 NATIONAL ELECTION')
-    data_dict_provincial = parse_data_old(result_list, "14 APR 2004 PROVINCIAL ELECTION")
+    # # # 2004
+    # # # --------------------------------------------------------------------------
+    # headings, result_list = read_data('election_results/2004 NPE.csv')
+    # data_dict_national = parse_data_old(result_list, '14 APR 2004 NATIONAL ELECTION')
+    # data_dict_provincial = parse_data_old(result_list, "14 APR 2004 PROVINCIAL ELECTION")
 
-    print "\nNational 2004"
-    print(json.dumps(data_dict_national['EASTERN CAPE']['results'], indent=4))
-    print "\nProvincial 2004"
-    print(json.dumps(data_dict_provincial['EASTERN CAPE']['results'], indent=4))
-    store_data_old(data_dict_national, data_dict_provincial, 2004)
-    db.session.commit()
+    # print "\nNational 2004"
+    # print(json.dumps(data_dict_national['EASTERN CAPE']['results'], indent=4))
+    # print "\nProvincial 2004"
+    # print(json.dumps(data_dict_provincial['EASTERN CAPE']['results'], indent=4))
+    # store_data_old(data_dict_national, data_dict_provincial, 2004)
+    # db.session.commit()
 
 
-    # # 1999
-    # # --------------------------------------------------------------------------
-    headings, result_list = read_data('election_results/1999 NPE.csv')
-    data_dict_national = parse_data_old(result_list, 'NATIONAL ELECTIONS 1999')
-    data_dict_provincial = parse_data_old(result_list, "PROVINCIAL ELECTIONS 1999")
+    # # # 1999
+    # # # --------------------------------------------------------------------------
+    # headings, result_list = read_data('election_results/1999 NPE.csv')
+    # data_dict_national = parse_data_old(result_list, 'NATIONAL ELECTIONS 1999')
+    # data_dict_provincial = parse_data_old(result_list, "PROVINCIAL ELECTIONS 1999")
 
-    print "\nNational 1999"
-    print(json.dumps(data_dict_national['EASTERN CAPE']['results'], indent=4))
-    print "\nProvincial 1999"
-    print(json.dumps(data_dict_provincial['EASTERN CAPE']['results'], indent=4))
-    store_data_old(data_dict_national, data_dict_provincial, 1999)
-    db.session.commit()
+    # print "\nNational 1999"
+    # print(json.dumps(data_dict_national['EASTERN CAPE']['results'], indent=4))
+    # print "\nProvincial 1999"
+    # print(json.dumps(data_dict_provincial['EASTERN CAPE']['results'], indent=4))
+    # store_data_old(data_dict_national, data_dict_provincial, 1999)
+    # db.session.commit()
 
     # 2014
     # --------------------------------------------------------------------------
