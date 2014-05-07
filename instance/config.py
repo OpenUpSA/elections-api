@@ -7,3 +7,5 @@ DEBUG = True
 HOST = "http://localhost:5000"
 
 SQLALCHEMY_DATABASE_URI = 'sqlite:///../instance/tmp.db'
+
+ADMIN_USER = "admin@code4sa.org"

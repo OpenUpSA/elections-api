@@ -61,10 +61,6 @@ def validate_event_type(event_type):
 def validate_year(year):
 
     tmp = ", ".join(str(x) for x in years)
-    try:
-        year = int(year)
-    except ValueError as e:
-        raise ApiException(422, "Incorrect year specified. Please use one of: " + tmp + ".")
     if not year in years:
         raise ApiException(422, "Incorrect year specified. Please use one of: " + tmp + ".")
     return year
@@ -104,7 +100,7 @@ def index_years(event_type):
     return send_api_response(out)
 
 
-@app.route('/<event_type>/<year>/')
+@app.route('/<event_type>/<int:year>/')
 def results_overall(event_type, year):
     """
     Return overall national results, with links to available areas.
@@ -123,8 +119,8 @@ def results_overall(event_type, year):
     return send_api_response(out)
 
 
-@app.route('/<event_type>/<year>/<area>/')
-@app.route('/<event_type>/<year>/<area>/<area_id>/')
+@app.route('/<event_type>/<int:year>/<area>/')
+@app.route('/<event_type>/<int:year>/<area>/<int:area_id>/')
 def results_by_area(event_type, year, area, area_id=None):
     """
     Return results for the specified area, with links to available parent areas where applicable.

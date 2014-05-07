@@ -1,0 +1,28 @@
+{% extends 'admin/base.html' %}
+{% block head_css %}
+    {{ super() }}
+    <style>
+    </style>
+{% endblock head_css%}
+
+{% block access_control %}
+    {% if current_user.is_authenticated() %}
+        <div class="btn-group pull-right">
+            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                <i class="icon-user"></i> {{ current_user.email }} <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a href="{{ url_for('admin.logout_view') }}">Log out</a></li>
+            </ul>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block tail_js %}
+    {{ super() }}
+    <script type="application/javascript">
+        $( document ).ready(function(){
+            $(".label-tooltip").tooltip({'placement': 'right'})
+        })
+    </script>
+{% endblock %}
