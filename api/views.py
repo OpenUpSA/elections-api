@@ -186,7 +186,7 @@ def results_by_area(event_type, year, area, area_id=None):
         if filter_area and filter_id:
             logger.debug("filtering: " + filter_area + " - " + filter_id)
             # retrieve the entity that will be filtered on
-            obj = models[filter_area][0].query.filter(models[filter_area][1]==filter_id).first()
+            obj = models[filter_area][0].query.filter(models[filter_area][0].year==year, models[filter_area][1]==filter_id).first()
             if obj is None:
                 raise ApiException(404, "Could not find the specified filter. Check that you have provided a valid ID, or remove the filter.")
             count = models[area][0].query.filter(models[area][0].year==year).filter(model_filters[area][filter_area]==obj).count()
