@@ -42,47 +42,45 @@ def download_latest_results(id):
 		check_field_provincial = json.loads(check_result.results_provincial)
 		if (int(check_field_national["meta"]["vote_complete"]) + int(check_field_provincial["meta"]["vote_complete"]) < 200):
 			if (dt.tm_year == 2009):
-				print "Using this as a test"
 				id = 146
-				uri = "http://localhost:8082/result/" + str(id) + "/voting_district/"+ str(item["VDNumber"])
-				print uri
-				jvddata = urllib2.urlopen(uri).read()
-				vddata = json.loads(jvddata)
-				if int(id) == int(vddata["ElectoralEventID"]):
-					print "Looks valid for " + str(vddata["ElectoralEvent"])
-					data_dict = {'meta': {}, 'vote_count': {}}
-					data_dict["meta"]["num_registered"] = vddata['RegisteredVoters']
-					data_dict["meta"]["turnout_percentage"] = vddata['PercVoterTurnout']
-					data_dict["meta"]["vote_count"] = vddata['TotalValidVotes']
-					data_dict["meta"]["spoilt_votes"] = vddata['SpoiltVotes']
-					data_dict["meta"]["total_votes"] = vddata['TotalVotesCast']
-					data_dict["meta"]["section_24a_votes"] = vddata['Section24AVotes']
-					data_dict["meta"]["special_votes"] = vddata['SpecialVotes']
-					if (vddata['bResultsComplete']):
-						data_dict["meta"]["vote_complete"] = 100
+				print "Using this as a test"
+			
+			uri = "http://localhost:8082/result/" + str(id) + "/voting_district/"+ str(item["VDNumber"])
+			print uri
+			jvddata = urllib2.urlopen(uri).read()
+			vddata = json.loads(jvddata)
+			if int(id) == int(vddata["ElectoralEventID"]):
+				print "Looks valid for " + str(vddata["ElectoralEvent"])
+				data_dict = {'meta': {}, 'vote_count': {}}
+				data_dict["meta"]["num_registered"] = vddata['RegisteredVoters']
+				data_dict["meta"]["turnout_percentage"] = vddata['PercVoterTurnout']
+				data_dict["meta"]["vote_count"] = vddata['TotalValidVotes']
+				data_dict["meta"]["spoilt_votes"] = vddata['SpoiltVotes']
+				data_dict["meta"]["total_votes"] = vddata['TotalVotesCast']
+				data_dict["meta"]["section_24a_votes"] = vddata['Section24AVotes']
+				data_dict["meta"]["special_votes"] = vddata['SpecialVotes']
+				if (vddata['bResultsComplete']):
+					data_dict["meta"]["vote_complete"] = 100
+				else:
+					data_dict["meta"]["vote_complete"] = round(vddata['VDWithResultsCaptured'] / vddata['VDCount'] * 100, 4)
+				for party_data in vddata["PartyBallotResults"]:
+					data_dict["vote_count"][party_data["Name"]] = party_data["ValidVotes"]
+				if (str(vddata["ElectoralEvent"]).lower().find("national") > -1):
+					check_field = check_field_national
+				else:
+					check_field = check_field_provincial
+				if int(check_field["meta"]["vote_complete"]) < 100:
+					print "Updating this one"
+					if (str(vddata["ElectoralEvent"]).lower().find("national") > -1):
+						query.update({ 'results_national': json.dumps(data_dict) })
 					else:
-						data_dict["meta"]["vote_complete"] = round(vddata['VDWithResultsCaptured'] / vddata['VDCount'] * 100, 4)
-					for party_data in vddata["PartyBallotResults"]:
-						data_dict["vote_count"][party_data["Name"]] = party_data["ValidVotes"]
-					if (str(vddata["ElectoralEvent"]).find("National") > -1):
-						check_field = check_field_national
-					else:
-						check_field = check_field_provincial
-					if int(check_field["meta"]["vote_complete"]) < 100:
-						print "Updating this one"
-						if (str(vddata["ElectoralEvent"]).find("National") > -1):
-							query.update({ 'results_national': json.dumps(data_dict) })
-						else:
-							query.update({ 'results_provincial': json.dumps(data_dict) })
-						db.session.commit()
-						ward_queue.append(check_result.ward_pk)
-						municipality_queue.append(check_result.municipality_pk)
-						province_queue.append(check_result.province_pk)
-					else:
-						print str(vddata["ElectoralEvent"]).find("National"), int(check_field["meta"]["vote_complete"]), int(check_field["meta"]["total_votes"]), check_result.pk
-			else:
-				print "Got a live one"
-				# print dt
+						query.update({ 'results_provincial': json.dumps(data_dict) })
+					db.session.commit()
+					ward_queue.append(check_result.ward_pk)
+					municipality_queue.append(check_result.municipality_pk)
+					province_queue.append(check_result.province_pk)
+				else:
+					print str(vddata["ElectoralEvent"]).lower().find("national"), int(check_field["meta"]["vote_complete"]), int(check_field["meta"]["total_votes"]), check_result.pk
 	calculate_ward(set(ward_queue), dt.tm_year)
 	calculate_municipality(set(municipality_queue), dt.tm_year, id)
 	calculate_province(set(province_queue), dt.tm_year, id)
@@ -143,7 +141,7 @@ def calculate_municipality(queue, year, id):
 			data_dict["meta"]["vote_complete"] = round(data['VDWithResultsCaptured'] / data['VDCount'] * 100, 4)
 		for party_data in data["PartyBallotResults"]:
 			data_dict["vote_count"][party_data["Name"]] = party_data["ValidVotes"]
-		if (str(data["ElectoralEvent"]).find("National") > -1):
+		if (str(data["ElectoralEvent"]).lower().find("national") > -1):
 			query.update({ 'results_national': json.dumps(data_dict) })
 		else:
 			query.update({ 'results_provincial': json.dumps(data_dict) })
@@ -171,7 +169,7 @@ def calculate_province(queue, year, id):
 			data_dict["meta"]["vote_complete"] = round(data['VDWithResultsCaptured'] / data['VDCount'] * 100, 4)
 		for party_data in data["PartyBallotResults"]:
 			data_dict["vote_count"][party_data["Name"]] = party_data["ValidVotes"]
-		if (str(data["ElectoralEvent"]).find("National") > -1):
+		if (str(data["ElectoralEvent"]).lower().find("national") > -1):
 			query.update({ 'results_national': json.dumps(data_dict) })
 		else:
 			query.update({ 'results_provincial': json.dumps(data_dict) })
@@ -220,7 +218,7 @@ def convert(jdata):
  #        results_provincial=json.dumps(data_dict["country"]['results']),
  #    )
 	# db.session.add(tmp)
-	if (electoral_event.find("NATIONAL") > -1):
+	if (electoral_event.lower().find("national") > -1):
 		db.session.query(Country).filter(Country.year == "2014").update({ 'results_national': json.dumps(data_dict["country"]['results']) })
 	else:
 		db.session.query(Country).filter(Country.year == "2014").update({ 'results_provincial': json.dumps(data_dict["country"]['results']) })
