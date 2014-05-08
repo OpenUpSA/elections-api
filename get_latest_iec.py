@@ -308,7 +308,7 @@ def refresh_item(ballot, demarc, uid):
 		download_vd(id, uid, "2014")
 	if (demarc == "ward"):
 		ward = db.session.query(Ward).filter(Ward.ward_id == uid).first()
-		vds = db.session.query(VotingDistrict).filter(VotingDistrict.ward_pk == ward.pk).all()
+		vds = db.session.query(VotingDistrict).filter(VotingDistrict.ward_pk == ward.pk, VotingDistrict.year == "2014").all()
 		for vd in vds:
 			try:
 				download_vd(id, vd.voting_district_id, "2014")
@@ -316,7 +316,7 @@ def refresh_item(ballot, demarc, uid):
 				print "Failed to download vd " + str(vd.voting_district_id)
 	if (demarc == "municipality"):
 		municipality = db.session.query(Municipality).filter(Municipality.municipality_id == uid).first()
-		vds = db.session.query(VotingDistrict).filter(VotingDistrict.municipality_pk == municipality.pk).all()
+		vds = db.session.query(VotingDistrict).filter(VotingDistrict.municipality_pk == municipality.pk, VotingDistrict.year == "2014").all()
 		for vd in vds:
 			try:
 				download_vd(id, vd.voting_district_id, "2014")
@@ -324,7 +324,7 @@ def refresh_item(ballot, demarc, uid):
 				print "Failed to download vd " + str(vd.voting_district_id)
 	if (demarc == "province"):
 		province = db.session.query(Province).filter(Province.province_id == uid).first()
-		vds = db.session.query(VotingDistrict).filter(VotingDistrict.province_pk == province.pk).all()
+		vds = db.session.query(VotingDistrict).filter(VotingDistrict.province_pk == province.pk, VotingDistrict.year == "2014").all()
 		for vd in vds:
 			try:
 				download_vd(id, vd.voting_district_id, "2014")
