@@ -339,6 +339,17 @@ if __name__ == "__main__":
 		demarc = sys.argv[2]
 		uid = sys.argv[3]
 		refresh_item(ballot, demarc, uid)
+	elif (len(sys.argv) == 2):
+		if (sys.argv[1] == "national"):
+			calculate_national("2014", 291)
+	elif (len(sys.argv) == 3):
+		if (sys.argv[1] == "province"):
+			calculate_province([sys.argv[2]], "2014", 291)
+			calculate_province([sys.argv[2]], "2014", 292)
+		if (sys.argv[1] == "municipality"):
+			municipality = db.session.query(Municipality).filter(Municipality.municipality_id == sys.argv[2]).first()
+			calculate_municipality([municipality.pk], "2014", 291)
+			calculate_municipality([municipality.pk], "2014", 292)
 	else:
 		download_latest_results(291)
 		download_provincial_results(292)
