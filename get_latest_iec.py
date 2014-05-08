@@ -128,7 +128,9 @@ def download_vd(id, voting_district_id, year):
 		check_field = json.loads(check_result.results_provincial)
 	province = db.session.query(Province).filter(Province.pk == check_result.province_pk).first()
 	province_id = province_order[province.province_id]
-	uri = "http://localhost:8082/result/" + str(id) + "/province/" + str(province_id) + "/voting_district/"+ str(voting_district_id)
+	municipality = db.session.query(Municipality).filter(Municipality.pk == check_result.municipality_pk).first()
+	municipality_id = find_municipal_code(municipality.municipality_id)
+	uri = "http://localhost:8082/result/" + str(id) + "/province/" + str(province_id) + "/municipality/" + str(municipality_id) + "/voting_district/"+ str(voting_district_id)
 	print uri
 	jvddata = urllib2.urlopen(uri).read()
 	vddata = json.loads(jvddata)
