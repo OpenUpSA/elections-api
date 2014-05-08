@@ -198,6 +198,7 @@ def calculate_ward(queue, year, type):
 
 def calculate_municipality(queue, year, id):
 	for pk in queue:
+		print pk
 		query = db.session.query(Municipality).filter(Municipality.pk == pk, Municipality.year == int(year))
 		municipality = query.first()
 		print municipality
