@@ -307,6 +307,14 @@ def refresh_item(ballot, demarc, uid):
 	if (demarc == "voting_district"):
 		download_vd(id, uid, "2014")
 		calculate_ward(set(ward_queue), "2014", ballot)
+	if (demarc == "ward"):
+		ward = db.session.query(Ward).filter(Ward.ward_id == uid).first()
+		
+		vds = db.session.query(VotingDistrict).filter(VotingDistrict.ward_pk == ward.pk).all()
+		
+		for vd in vds:
+			download_vd(id, vd.voting_district_id, "2014")
+		calculate_ward(set(ward_queue), "2014", ballot)
 
 if __name__ == "__main__":
 	if (len(sys.argv) == 4):
