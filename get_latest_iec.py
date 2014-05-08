@@ -198,7 +198,7 @@ def calculate_ward(queue, year, type):
 
 def calculate_municipality(queue, year, id):
 	for pk in queue:
-		query = db.session.query(Municipality).filter(Municipality.pk == pk)
+		query = db.session.query(Municipality).filter(Municipality.pk == pk, Municipality.year == year)
 		municipality = query.first()
 		province = db.session.query(Province).filter(Province.pk == municipality.province_pk).first()
 		province_id = province_order[province.province_id]
@@ -229,7 +229,7 @@ def calculate_municipality(queue, year, id):
 
 def calculate_province(queue, year, id):
 	for pk in queue:
-		query = db.session.query(Province).filter(Province.pk == pk)
+		query = db.session.query(Province).filter(Province.pk == pk, Province.year == year)
 		province = query.first()
 		uri = "http://localhost:8082/result/" + str(id) + "/province/"+ str(province_order[province.province_id])
 		print uri
@@ -309,6 +309,7 @@ def refresh_item(ballot, demarc, uid):
 	if (demarc == "ward"):
 		ward = db.session.query(Ward).filter(Ward.ward_id == uid).first()
 		vds = db.session.query(VotingDistrict).filter(VotingDistrict.ward_pk == ward.pk, VotingDistrict.year == "2014").all()
+		print "Number of voting districts", len(vds)
 		for vd in vds:
 			try:
 				download_vd(id, vd.voting_district_id, "2014")
@@ -338,6 +339,17 @@ if __name__ == "__main__":
 		demarc = sys.argv[2]
 		uid = sys.argv[3]
 		refresh_item(ballot, demarc, uid)
+	elif (len(sys.argv) == 2):
+		if (sys.argv[1] == "national"):
+			calculate_national("2014", 291)
+	elif (len(sys.argv) == 3):
+		if (sys.argv[1] == "province"):
+			calculate_province([sys.argv[2]], "2014", 291)
+			calculate_province([sys.argv[2]], "2014", 292)
+		if (sys.argv[1] == "municipality"):
+			municipality = db.session.query(Municipality).filter(Municipality.municipality_id == sys.argv[2]).first()
+			calculate_municipality([municipality.pk], "2014", 291)
+			calculate_municipality([municipality.pk], "2014", 292)
 	else:
 		download_latest_results(291)
 		download_provincial_results(292)
