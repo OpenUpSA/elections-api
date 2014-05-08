@@ -200,6 +200,7 @@ def calculate_municipality(queue, year, id):
 	for pk in queue:
 		query = db.session.query(Municipality).filter(Municipality.pk == pk, Municipality.year == int(year))
 		municipality = query.first()
+		print municipality
 		province = db.session.query(Province).filter(Province.pk == municipality.province_pk).first()
 		province_id = province_order[province.province_id]
 		print find_municipal_code(str(municipality.municipality_id))
