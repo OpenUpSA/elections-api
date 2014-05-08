@@ -50,10 +50,7 @@ def find_municipal_code(munic_id):
 				return str(munic["MunicipalityID"])
 	return False
 
-def download_latest_results(id):
-	ward_queue = []
-	municipality_queue = []
-	province_queue = []
+def download_latest_results(id, vdlist = False):
 	jdata = urllib2.urlopen("http://localhost:8082/latest/" + str(id)).read()
 	data = json.loads(jdata)
 	max_time = highest_time = 0
@@ -75,52 +72,8 @@ def download_latest_results(id):
 	 	ut = int(t.strftime("%s"))
 	 	if (ut > highest_time):
 	 		highest_time = ut
-	 	print "Max time", max_time, "Update time", ut, item["ReleasedDate"]
 	 	if (ut > max_time):
-	 		# max_time = ut
-			query = db.session.query(VotingDistrict).filter(VotingDistrict.year == int(dt.tm_year), VotingDistrict.voting_district_id == int(item["VDNumber"]))
-			check_result = query.first()
-			check_field_national = json.loads(check_result.results_national)
-			check_field_provincial = json.loads(check_result.results_provincial)
-			if (int(check_field_national["meta"]["vote_complete"]) + int(check_field_provincial["meta"]["vote_complete"]) < 200):
-				province = db.session.query(Province).filter(Province.pk == check_result.province_pk).first()
-				province_id = province_order[province.province_id]
-				uri = "http://localhost:8082/result/" + str(id) + "/province/" + str(province_id) + "/voting_district/"+ str(item["VDNumber"])
-				print uri
-				jvddata = urllib2.urlopen(uri).read()
-				vddata = json.loads(jvddata)
-				if int(id) == int(vddata["ElectoralEventID"]):
-					print "Looks valid for " + str(vddata["ElectoralEvent"])
-					data_dict = {'meta': {}, 'vote_count': {}}
-					data_dict["meta"]["num_registered"] = vddata['RegisteredVoters']
-					data_dict["meta"]["turnout_percentage"] = vddata['PercVoterTurnout']
-					data_dict["meta"]["vote_count"] = vddata['TotalValidVotes']
-					data_dict["meta"]["spoilt_votes"] = vddata['SpoiltVotes']
-					data_dict["meta"]["total_votes"] = vddata['TotalVotesCast']
-					data_dict["meta"]["section_24a_votes"] = vddata['Section24AVotes']
-					data_dict["meta"]["special_votes"] = vddata['SpecialVotes']
-					if (vddata['bResultsComplete']):
-						data_dict["meta"]["vote_complete"] = 100
-					else:
-						data_dict["meta"]["vote_complete"] = round(float(vddata['VDWithResultsCaptured']) / float(vddata['VDCount']) * 100, 2)
-					for party_data in vddata["PartyBallotResults"]:
-						data_dict["vote_count"][party_data["Name"]] = party_data["ValidVotes"]
-					if (str(vddata["ElectoralEvent"]).lower().find("national") > -1):
-						check_field = check_field_national
-					else:
-						check_field = check_field_provincial
-					if int(check_field["meta"]["vote_complete"]) < 100:
-						print "Updating this one"
-						if (str(vddata["ElectoralEvent"]).lower().find("national") > -1):
-							query.update({ 'results_national': json.dumps(data_dict) })
-						else:
-							query.update({ 'results_provincial': json.dumps(data_dict) })
-						db.session.commit()
-						ward_queue.append(check_result.ward_pk)
-						municipality_queue.append(check_result.municipality_pk)
-						province_queue.append(check_result.province_pk)
-					else:
-						print str(vddata["ElectoralEvent"]).lower().find("national"), int(check_field["meta"]["vote_complete"]), int(check_field["meta"]["total_votes"]), check_result.pk
+	 		download_vd(id, item["VDNumber"], dt.tm_year)
 	calculate_ward(set(ward_queue), dt.tm_year, "national")
 	calculate_municipality(set(municipality_queue), dt.tm_year, id)
 	calculate_province(set(province_queue), dt.tm_year, id)
@@ -130,10 +83,11 @@ def download_latest_results(id):
 	f.write(str(highest_time))
 	f.close()
 
-def download_provincial_results(id):
-	ward_queue = []
-	municipality_queue = []
-	province_queue = []
+ward_queue = []
+municipality_queue = []
+province_queue = []
+
+def download_provincial_results(id, vdlist = False):
 	jdata = urllib2.urlopen("http://localhost:8082/latest/" + str(id)).read()
 	data = json.loads(jdata)
 	max_time = highest_time = 0
@@ -155,49 +109,8 @@ def download_provincial_results(id):
 	 	ut = int(t.strftime("%s"))
 	 	if (ut > highest_time):
 	 		highest_time = ut
-	 	print "Max time", max_time, "Update time", ut, item["ReleasedDate"]
 	 	if (ut > max_time):
-	 		# max_time = ut
-			query = db.session.query(VotingDistrict).filter(VotingDistrict.year == int(dt.tm_year), VotingDistrict.voting_district_id == int(item["VDNumber"]))
-			check_result = query.first()
-			check_field_provincial = json.loads(check_result.results_provincial)
-			province = db.session.query(Province).filter(Province.pk == check_result.province_pk).first()
-			province_id = province_order[province.province_id]
-			if ( int(check_field_provincial["meta"]["vote_complete"]) < 100):
-				uri = "http://localhost:8082/result/" + str(id) + "/province/" + str(province_id) + "/voting_district/"+ str(item["VDNumber"])
-				print uri
-				jvddata = urllib2.urlopen(uri).read()
-				vddata = json.loads(jvddata)
-				if int(id) == int(vddata["ElectoralEventID"]):
-					print "Looks valid for " + str(vddata["ElectoralEvent"])
-					data_dict = {'meta': {}, 'vote_count': {}}
-					data_dict["meta"]["num_registered"] = vddata['RegisteredVoters']
-					data_dict["meta"]["turnout_percentage"] = vddata['PercVoterTurnout']
-					data_dict["meta"]["vote_count"] = vddata['TotalValidVotes']
-					data_dict["meta"]["spoilt_votes"] = vddata['SpoiltVotes']
-					data_dict["meta"]["total_votes"] = vddata['TotalVotesCast']
-					data_dict["meta"]["section_24a_votes"] = vddata['Section24AVotes']
-					data_dict["meta"]["special_votes"] = vddata['SpecialVotes']
-					if (vddata['bResultsComplete']):
-						data_dict["meta"]["vote_complete"] = 100
-					else:
-						data_dict["meta"]["vote_complete"] = round(float(vddata['VDWithResultsCaptured']) / float(vddata['VDCount']) * 100, 2)
-					for party_data in vddata["PartyBallotResults"]:
-						data_dict["vote_count"][party_data["Name"]] = party_data["ValidVotes"]
-					
-					check_field = check_field_provincial
-					if int(check_field["meta"]["vote_complete"]) < 100:
-						print "Updating this one"
-						if (str(vddata["ElectoralEvent"]).lower().find("national") > -1):
-							query.update({ 'results_national': json.dumps(data_dict) })
-						else:
-							query.update({ 'results_provincial': json.dumps(data_dict) })
-						db.session.commit()
-						ward_queue.append(check_result.ward_pk)
-						municipality_queue.append(check_result.municipality_pk)
-						province_queue.append(check_result.province_pk)
-					else:
-						print str(vddata["ElectoralEvent"]).lower().find("national"), int(check_field["meta"]["vote_complete"]), int(check_field["meta"]["total_votes"]), check_result.pk
+			download_vd(id, item["VDNumber"], dt.tm_year)
 	calculate_ward(set(ward_queue), dt.tm_year, "provincial")
 	calculate_municipality(set(municipality_queue), dt.tm_year, id)
 	calculate_province(set(province_queue), dt.tm_year, id)
@@ -206,8 +119,46 @@ def download_provincial_results(id):
 	f.close()
 	# calculate_national(dt.tm_year, id)
 
-def calculate_ward(ward_queue, year, type):
-	for ward_pk in ward_queue:
+def download_vd(id, voting_district_id, year):
+	query = db.session.query(VotingDistrict).filter(VotingDistrict.year == int(year), VotingDistrict.voting_district_id == int(voting_district_id))
+	check_result = query.first()
+	if (id == 291):
+		check_field = json.loads(check_result.results_national)
+	else:
+		check_field = json.loads(check_result.results_provincial)
+	province = db.session.query(Province).filter(Province.pk == check_result.province_pk).first()
+	province_id = province_order[province.province_id]
+	uri = "http://localhost:8082/result/" + str(id) + "/province/" + str(province_id) + "/voting_district/"+ str(voting_district_id)
+	print uri
+	jvddata = urllib2.urlopen(uri).read()
+	vddata = json.loads(jvddata)
+	if int(id) == int(vddata["ElectoralEventID"]):
+		print "Looks valid for " + str(vddata["ElectoralEvent"])
+		data_dict = {'meta': {}, 'vote_count': {}}
+		data_dict["meta"]["num_registered"] = vddata['RegisteredVoters']
+		data_dict["meta"]["turnout_percentage"] = vddata['PercVoterTurnout']
+		data_dict["meta"]["vote_count"] = vddata['TotalValidVotes']
+		data_dict["meta"]["spoilt_votes"] = vddata['SpoiltVotes']
+		data_dict["meta"]["total_votes"] = vddata['TotalVotesCast']
+		data_dict["meta"]["section_24a_votes"] = vddata['Section24AVotes']
+		data_dict["meta"]["special_votes"] = vddata['SpecialVotes']
+		if (vddata['bResultsComplete']):
+			data_dict["meta"]["vote_complete"] = 100
+		else:
+			data_dict["meta"]["vote_complete"] = round(float(vddata['VDWithResultsCaptured']) / float(vddata['VDCount']) * 100, 2)
+		for party_data in vddata["PartyBallotResults"]:
+			data_dict["vote_count"][party_data["Name"]] = party_data["ValidVotes"]
+		if (str(vddata["ElectoralEvent"]).lower().find("national") > -1):
+			query.update({ 'results_national': json.dumps(data_dict) })
+		else:
+			query.update({ 'results_provincial': json.dumps(data_dict) })
+		db.session.commit()
+		ward_queue.append(check_result.ward_pk)
+		municipality_queue.append(check_result.municipality_pk)
+		province_queue.append(check_result.province_pk)
+	
+def calculate_ward(queue, year, type):
+	for ward_pk in queue:
 		query = db.session.query(VotingDistrict).filter(VotingDistrict.year == int(year), VotingDistrict.ward_pk == int(ward_pk))
 		vds = query.all()
 		data_dict = {'meta': {}, 'vote_count': {}}
@@ -333,55 +284,6 @@ def calculate_national(year, id):
 			query.update({ 'results_provincial': json.dumps(data_dict) })
 		db.session.commit()
 
-
-def find_latest_file():
-	# print sys.argv[1]
-	max_time = 0
-	oldest_file = ""
-	for f in glob(sys.argv[1] + "*"):
-		if (max_time < os.path.getmtime(f)):
-			max_time = os.path.getmtime(f)
-			oldest_file = f
-	f = open(oldest_file)
-	return f.read()
-
-def convert(jdata):
-	data = json.loads(jdata)
-	print data["ElectoralEvent"]
-	data_dict = {'country': {'results': {'meta': {}, 'vote_count': {}}, 'wards': {}}}
-	
-	electoral_event = data['ElectoralEvent']
-	# province = row.get('PROVINCE')
-	# municipality = row.get('MUNICIPALITY')
-	# ward = row.get('WARD')
-	# voting_district = row.get('VOTING DISTRICT')
-	# party_name = row.get('PARTY NAME')
-	# data_dict["meta"]["num_registered"] = data['RegisteredVoters']
-	# data_dict["country"]["results"]["meta"]["turnout_percentage"] = data['PercVoterTurnout']
-	# data_dict["country"]["results"]["meta"]["vote_count"] = data['TotalValidVotes']
-	# data_dict["country"]["results"]["meta"]["spoilt_votes"] = data['SpoiltVotes']
-	# data_dict["country"]["results"]["meta"]["total_votes"] = data['TotalVotesCast']
-	# data_dict["country"]["results"]["meta"]["section_24a_votes"] = data['Section24AVotes']
-	# data_dict["country"]["results"]["meta"]["special_votes"] = data['SpecialVotes']
-	# if (data['bResultsComplete']):
-	# 	data_dict["country"]["results"]["meta"]["vote_complete"] = 100
-	# else:
-	# 	data_dict["country"]["results"]["meta"]["vote_complete"] = round(data['VDWithResultsCaptured'] / data['VDCount'] * 100, 2)
-	# for party_data in data["PartyBallotResults"]:
-	# 	data_dict["country"]["results"]["vote_count"][party_data["Name"]] = party_data["ValidVotes"]
-	# 	# print party_data
-	# print data_dict
-	# tmp = Country(
- #        year=2014,
- #        results_national=json.dumps(data_dict["country"]['results']),
- #        results_provincial=json.dumps(data_dict["country"]['results']),
- #    )
-	# db.session.add(tmp)
-	if (electoral_event.lower().find("national") > -1):
-		db.session.query(Country).filter(Country.year == "2014").update({ 'results_national': json.dumps(data_dict["country"]['results']) })
-	else:
-		db.session.query(Country).filter(Country.year == "2014").update({ 'results_provincial': json.dumps(data_dict["country"]['results']) })
-
 def test(vd):
 	data_dict = {'meta': {}, 'vote_count': {}}
 	data_dict["meta"]["num_registered"] = 0
@@ -395,15 +297,24 @@ def test(vd):
 	db.session.query(VotingDistrict).filter(VotingDistrict.voting_district_id == vd).update({ 'results_national': json.dumps(data_dict) })
 	db.session.commit()
 
+def refresh_item(ballot, demarc, uid):
+	if (ballot == "national"):
+		id = 291
+	else:
+		id = 292
+	if (demarc == "voting_district"):
+		download_vd(id, uid, "2014")
+		calculate_ward(set(ward_queue), "2014", ballot)
+
 if __name__ == "__main__":
-	# Find latest file
-	# data = find_latest_file()
-	# Convert
-	# convert(data)
-	# Put in DB
-	# db.session.commit()
-	download_latest_results(291)
-	download_provincial_results(292)
+	if (len(sys.argv) == 4):
+		ballot = sys.argv[1]
+		demarc = sys.argv[2]
+		uid = sys.argv[3]
+		refresh_item(ballot, demarc, uid)
+	else:
+		download_latest_results(291)
+		download_provincial_results(292)
 	# calculate_province
 	# download_latest_results(292)
 	# test(32862595)
