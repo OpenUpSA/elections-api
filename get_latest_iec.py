@@ -198,13 +198,11 @@ def calculate_ward(queue, year, type):
 
 def calculate_municipality(queue, year, id):
 	for pk in queue:
-		print pk
 		query = db.session.query(Municipality).filter(Municipality.pk == pk, Municipality.year == int(year))
 		municipality = query.first()
-		print municipality
 		province = db.session.query(Province).filter(Province.pk == municipality.province_pk).first()
 		province_id = province_order[province.province_id]
-		print find_municipal_code(str(municipality.municipality_id))
+		print "Fetching municipality", find_municipal_code(str(municipality.municipality_id))
 		uri = "http://localhost:8082/result/" + str(id) + "/province/" + str(province_id) + "/municipality/"+ find_municipal_code(str(municipality.municipality_id))
 		print uri
 		jdata = urllib2.urlopen(uri).read()
@@ -349,9 +347,15 @@ if __name__ == "__main__":
 			calculate_province([sys.argv[2]], "2014", 291)
 			calculate_province([sys.argv[2]], "2014", 292)
 		if (sys.argv[1] == "municipality"):
-			municipality = db.session.query(Municipality).filter(Municipality.municipality_id == sys.argv[2], Municipality.year == "2014").first()
-			calculate_municipality([municipality.pk], "2014", 291)
-			calculate_municipality([municipality.pk], "2014", 292)
+			if (sys.argv[2] == "all"):
+				municipalities = db.session.query(Municipality).filter(Municipality.year == "2014").all()
+				for municipality in municipalities:
+					calculate_municipality([municipality.pk], "2014", 291)
+					calculate_municipality([municipality.pk], "2014", 292)
+			else:
+				municipality = db.session.query(Municipality).filter(Municipality.municipality_id == sys.argv[2], Municipality.year == "2014").first()
+				calculate_municipality([municipality.pk], "2014", 291)
+				calculate_municipality([municipality.pk], "2014", 292)
 	else:
 		download_latest_results(291)
 		download_provincial_results(292)
