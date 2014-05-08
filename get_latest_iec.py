@@ -310,17 +310,26 @@ def refresh_item(ballot, demarc, uid):
 		ward = db.session.query(Ward).filter(Ward.ward_id == uid).first()
 		vds = db.session.query(VotingDistrict).filter(VotingDistrict.ward_pk == ward.pk).all()
 		for vd in vds:
-			download_vd(id, vd.voting_district_id, "2014")
+			try:
+				download_vd(id, vd.voting_district_id, "2014")
+			except:
+				print "Failed to download vd " + vd.voting_district_id
 	if (demarc == "municipality"):
 		municipality = db.session.query(Municipality).filter(Municipality.municipality_id == uid).first()
 		vds = db.session.query(VotingDistrict).filter(VotingDistrict.municipality_pk == municipality.pk).all()
 		for vd in vds:
-			download_vd(id, vd.voting_district_id, "2014")
+			try:
+				download_vd(id, vd.voting_district_id, "2014")
+			except:
+				print "Failed to download vd " + vd.voting_district_id
 	if (demarc == "province"):
 		province = db.session.query(Province).filter(Province.province_id == uid).first()
 		vds = db.session.query(VotingDistrict).filter(VotingDistrict.province_pk == province.pk).all()
 		for vd in vds:
-			download_vd(id, vd.voting_district_id, "2014")
+			try:
+				download_vd(id, vd.voting_district_id, "2014")
+			except:
+				print "Failed to download vd " + vd.voting_district_id
 	calculate_ward(set(ward_queue), "2014", ballot)
 
 if __name__ == "__main__":
