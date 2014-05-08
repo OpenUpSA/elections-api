@@ -41,10 +41,6 @@ def download_latest_results(id):
 		check_field_national = json.loads(check_result.results_national)
 		check_field_provincial = json.loads(check_result.results_provincial)
 		if (int(check_field_national["meta"]["vote_complete"]) + int(check_field_provincial["meta"]["vote_complete"]) < 200):
-			if (dt.tm_year == 2009):
-				id = 146
-				print "Using this as a test"
-			
 			uri = "http://localhost:8082/result/" + str(id) + "/voting_district/"+ str(item["VDNumber"])
 			print uri
 			jvddata = urllib2.urlopen(uri).read()
@@ -62,7 +58,7 @@ def download_latest_results(id):
 				if (vddata['bResultsComplete']):
 					data_dict["meta"]["vote_complete"] = 100
 				else:
-					data_dict["meta"]["vote_complete"] = round(vddata['VDWithResultsCaptured'] / vddata['VDCount'] * 100, 4)
+					data_dict["meta"]["vote_complete"] = round(float(vddata['VDWithResultsCaptured']) / float(vddata['VDCount']) * 100, 2)
 				for party_data in vddata["PartyBallotResults"]:
 					data_dict["vote_count"][party_data["Name"]] = party_data["ValidVotes"]
 				if (str(vddata["ElectoralEvent"]).lower().find("national") > -1):
@@ -114,8 +110,8 @@ def calculate_ward(ward_queue, year):
 			for key in data_provincial["vote_count"]:
 				data_dict_provincial["vote_count"][key] = int(data_dict_provincial["vote_count"].get(key, 0)) + int(data_provincial["vote_count"][key])
 			count = count + 1
-		data_dict_national["meta"]["vote_complete"] = round(data_dict_national["meta"]["vote_complete"] / count * 100, 4)
-		data_dict_provincial["meta"]["vote_complete"] = round(data_dict_provincial["meta"]["vote_complete"] / count * 100, 4)
+		data_dict_national["meta"]["vote_complete"] = round(float(data_dict_national["meta"]["vote_complete"]) / float(count) * 100, 2)
+		data_dict_provincial["meta"]["vote_complete"] = round(float(data_dict_provincial["meta"]["vote_complete"]) / float(count) * 100, 2)
 		db.session.query(Ward).filter(Ward.pk == ward_pk).update({ 'results_national': json.dumps(data_dict_national) })
 		db.session.query(Ward).filter(Ward.pk == ward_pk).update({ 'results_provincial': json.dumps(data_dict_provincial) })
 		db.session.commit()
@@ -139,7 +135,7 @@ def calculate_municipality(queue, year, id):
 		if (data['bResultsComplete']):
 			data_dict["meta"]["vote_complete"] = 100
 		else:
-			data_dict["meta"]["vote_complete"] = round(data['VDWithResultsCaptured'] / data['VDCount'] * 100, 4)
+			data_dict["meta"]["vote_complete"] = round(float(data['VDWithResultsCaptured']) / float(data['VDCount']) * 100, 2)
 		for party_data in data["PartyBallotResults"]:
 			data_dict["vote_count"][party_data["Name"]] = party_data["ValidVotes"]
 		if (str(data["ElectoralEvent"]).lower().find("national") > -1):
@@ -167,7 +163,7 @@ def calculate_province(queue, year, id):
 		if (data['bResultsComplete']):
 			data_dict["meta"]["vote_complete"] = 100
 		else:
-			data_dict["meta"]["vote_complete"] = round(data['VDWithResultsCaptured'] / data['VDCount'] * 100, 4)
+			data_dict["meta"]["vote_complete"] = round(float(data['VDWithResultsCaptured']) / float(data['VDCount']) * 100, 2)
 		for party_data in data["PartyBallotResults"]:
 			data_dict["vote_count"][party_data["Name"]] = party_data["ValidVotes"]
 		if (str(data["ElectoralEvent"]).lower().find("national") > -1):
@@ -198,7 +194,7 @@ def calculate_national(year, id):
 		if (data['bResultsComplete']):
 			data_dict["meta"]["vote_complete"] = 100
 		else:
-			data_dict["meta"]["vote_complete"] = round(data['VDWithResultsCaptured'] / data['VDCount'] * 100, 4)
+			data_dict["meta"]["vote_complete"] = round(float(data['VDWithResultsCaptured']) / float(data['VDCount']) * 100, 2)
 		for party_data in data["PartyBallotResults"]:
 			data_dict["vote_count"][party_data["Name"]] = party_data["ValidVotes"]
 		if (str(data["ElectoralEvent"]).lower().find("national") > -1):
@@ -240,7 +236,7 @@ def convert(jdata):
 	# if (data['bResultsComplete']):
 	# 	data_dict["country"]["results"]["meta"]["vote_complete"] = 100
 	# else:
-	# 	data_dict["country"]["results"]["meta"]["vote_complete"] = round(data['VDWithResultsCaptured'] / data['VDCount'] * 100, 4)
+	# 	data_dict["country"]["results"]["meta"]["vote_complete"] = round(data['VDWithResultsCaptured'] / data['VDCount'] * 100, 2)
 	# for party_data in data["PartyBallotResults"]:
 	# 	data_dict["country"]["results"]["vote_count"][party_data["Name"]] = party_data["ValidVotes"]
 	# 	# print party_data
@@ -277,7 +273,8 @@ if __name__ == "__main__":
 	# Put in DB
 	# db.session.commit()
 	download_latest_results(291)
-	download_latest_results(292)
+	calculate_province
+	# download_latest_results(292)
 	# test(32862595)
 	# download_latest_results(146)
 	# calculate_national(2014, 291)
