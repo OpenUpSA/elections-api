@@ -83,7 +83,9 @@ def download_latest_results(id):
 			check_field_national = json.loads(check_result.results_national)
 			check_field_provincial = json.loads(check_result.results_provincial)
 			if (int(check_field_national["meta"]["vote_complete"]) + int(check_field_provincial["meta"]["vote_complete"]) < 200):
-				uri = "http://localhost:8082/result/" + str(id) + "/voting_district/"+ str(item["VDNumber"])
+				province = db.session.query(Province).filter(Province.pk == check_result.province_pk).first()
+				province_id = province_order[province.province_id]
+				uri = "http://localhost:8082/result/" + str(id) + "/province/" + str(province_id) + "/voting_district/"+ str(item["VDNumber"])
 				print uri
 				jvddata = urllib2.urlopen(uri).read()
 				vddata = json.loads(jvddata)
@@ -119,7 +121,7 @@ def download_latest_results(id):
 						province_queue.append(check_result.province_pk)
 					else:
 						print str(vddata["ElectoralEvent"]).lower().find("national"), int(check_field["meta"]["vote_complete"]), int(check_field["meta"]["total_votes"]), check_result.pk
-	calculate_ward(set(ward_queue), dt.tm_year)
+	calculate_ward(set(ward_queue), dt.tm_year, "national")
 	calculate_municipality(set(municipality_queue), dt.tm_year, id)
 	calculate_province(set(province_queue), dt.tm_year, id)
 	calculate_national(dt.tm_year, id)
@@ -196,7 +198,7 @@ def download_provincial_results(id):
 						province_queue.append(check_result.province_pk)
 					else:
 						print str(vddata["ElectoralEvent"]).lower().find("national"), int(check_field["meta"]["vote_complete"]), int(check_field["meta"]["total_votes"]), check_result.pk
-	calculate_ward(set(ward_queue), dt.tm_year)
+	calculate_ward(set(ward_queue), dt.tm_year, "provincial")
 	calculate_municipality(set(municipality_queue), dt.tm_year, id)
 	calculate_province(set(province_queue), dt.tm_year, id)
 	f = open(fname, "w")
@@ -204,7 +206,7 @@ def download_provincial_results(id):
 	f.close()
 	# calculate_national(dt.tm_year, id)
 
-def calculate_ward(ward_queue, year):
+def calculate_ward(ward_queue, year, type):
 	for ward_pk in ward_queue:
 		query = db.session.query(VotingDistrict).filter(VotingDistrict.year == int(year), VotingDistrict.ward_pk == int(ward_pk))
 		vds = query.all()
@@ -217,25 +219,28 @@ def calculate_ward(ward_queue, year):
 		data_dict["meta"]["section_24a_votes"] = 0
 		data_dict["meta"]["special_votes"] = 0
 		data_dict["meta"]["vote_complete"] = 0
-		data_dict_national = data_dict_provincial = data_dict
 		count = 0;
+		tmp = []
 		for vd in vds:
-			data_national = json.loads(vd.results_national)
-			data_provincial = json.loads(vd.results_provincial)
-			for key in data_national["meta"]:
-
-				data_dict_national["meta"][key] = int(data_dict_national["meta"].get(key, 0)) + int(data_national["meta"][key])
-			for key in data_provincial["meta"]:
-				data_dict_provincial["meta"][key] = int(data_dict_provincial["meta"].get(key, 0)) + int(data_provincial["meta"][key])
-			for key in data_national["vote_count"]:
-				data_dict_national["vote_count"][key] = int(data_dict_national["vote_count"].get(key, 0)) + int(data_national["vote_count"][key])
-			for key in data_provincial["vote_count"]:
-				data_dict_provincial["vote_count"][key] = int(data_dict_provincial["vote_count"].get(key, 0)) + int(data_provincial["vote_count"][key])
+			if (type == "national"):
+				data = json.loads(vd.results_national)
+			else: 
+				data = json.loads(vd.results_provincial)
+			for key in data["meta"]:
+				data_dict["meta"][key] = int(data_dict["meta"].get(key, 0)) + int(data["meta"][key])
+				if (key == "total_votes"):
+					tmp.append(data["meta"][key])
+			for key in data["vote_count"]:
+				data_dict["vote_count"][key] = int(data_dict["vote_count"].get(key, 0)) + int(data["vote_count"][key])
 			count = count + 1
-		data_dict_national["meta"]["vote_complete"] = round(float(data_dict_national["meta"]["vote_complete"]) / float(count) * 100, 2)
-		data_dict_provincial["meta"]["vote_complete"] = round(float(data_dict_provincial["meta"]["vote_complete"]) / float(count) * 100, 2)
-		db.session.query(Ward).filter(Ward.pk == ward_pk).update({ 'results_national': json.dumps(data_dict_national) })
-		db.session.query(Ward).filter(Ward.pk == ward_pk).update({ 'results_provincial': json.dumps(data_dict_provincial) })
+		data_dict["meta"]["vote_complete"] = round(float(data_dict["meta"]["vote_complete"]) / float(count) * 100, 2)
+		if (type=="national"):
+			db.session.query(Ward).filter(Ward.pk == ward_pk).update({ 'results_national': json.dumps(data_dict) })
+		else:
+			db.session.query(Ward).filter(Ward.pk == ward_pk).update({ 'results_provincial': json.dumps(data_dict) })
+		# print tmp
+		# print ward_pk
+		# print count
 		db.session.commit()
 
 def calculate_municipality(queue, year, id):
