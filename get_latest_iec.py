@@ -309,6 +309,7 @@ def refresh_item(ballot, demarc, uid):
 	if (demarc == "ward"):
 		ward = db.session.query(Ward).filter(Ward.ward_id == uid).first()
 		vds = db.session.query(VotingDistrict).filter(VotingDistrict.ward_pk == ward.pk, VotingDistrict.year == "2014").all()
+		print "Number of voting districts", len(vds)
 		for vd in vds:
 			try:
 				download_vd(id, vd.voting_district_id, "2014")
