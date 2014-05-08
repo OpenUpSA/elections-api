@@ -349,7 +349,7 @@ if __name__ == "__main__":
 			calculate_province([sys.argv[2]], "2014", 291)
 			calculate_province([sys.argv[2]], "2014", 292)
 		if (sys.argv[1] == "municipality"):
-			municipality = db.session.query(Municipality).filter(Municipality.municipality_id == sys.argv[2]).first()
+			municipality = db.session.query(Municipality).filter(Municipality.municipality_id == sys.argv[2], Municipality.year == "2014").first()
 			calculate_municipality([municipality.pk], "2014", 291)
 			calculate_municipality([municipality.pk], "2014", 292)
 	else:
