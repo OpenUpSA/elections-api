@@ -35,7 +35,10 @@ def download_latest_results(id):
 	jdata = urllib2.urlopen("http://localhost:8082/latest/" + str(id)).read()
 	data = json.loads(jdata)
 	for item in data:
-		dt = strptime(item["ReleasedDate"], '%Y-%m-%dT%H:%M:%S.%f')
+		try:
+			dt = strptime(item["ReleasedDate"], '%Y-%m-%dT%H:%M:%S.%f')
+		except:
+			dt = strptime(item["ReleasedDate"], '%Y-%m-%dT%H:%M:%S')
 		query = db.session.query(VotingDistrict).filter(VotingDistrict.year == int(dt.tm_year), VotingDistrict.voting_district_id == int(item["VDNumber"]))
 		check_result = query.first()
 		check_field_national = json.loads(check_result.results_national)
