@@ -344,8 +344,10 @@ if __name__ == "__main__":
 			calculate_national("2014", 291)
 	elif (len(sys.argv) == 3):
 		if (sys.argv[1] == "province"):
-			calculate_province([sys.argv[2]], "2014", 291)
-			calculate_province([sys.argv[2]], "2014", 292)
+			provinces = db.session.query(Province).filter(Province.year == "2014").all()
+			for province in provinces:
+				calculate_province([province.pk], "2014", 291)
+				calculate_province([province.pk], "2014", 292)
 		if (sys.argv[1] == "municipality"):
 			if (sys.argv[2] == "all"):
 				municipalities = db.session.query(Municipality).filter(Municipality.year == "2014").all()
