@@ -4,9 +4,9 @@ from api.models import *
 from api import db
 import glob
 from itertools import chain
+import time
+import sqlite3
 
-db.drop_all()
-db.create_all()
 
 party_name_overrides = {
     "DEMOCRATIC ALLIANCE/DEMOKRATIESE ALLIANSIE": "DEMOCRATIC ALLIANCE",
@@ -46,6 +46,9 @@ def encode(str_in):
         out = clean
     return out
 
+def clear_dbs():
+    db.drop_all()
+    db.create_all()
 
 def read_data(filename):
     """
@@ -485,20 +488,161 @@ def prep_2014():
             db.session.add(voting_district_db)
     db.session.commit()
 
+def test_sqlite3(n=100000, dbname = 'sqlite3.db'):
+    conn = init_sqlite3(dbname)
+    c = conn.cursor()
+    t0 = time.time()
+    for i in range(n):
+        row = ('NAME ' + str(i),)
+        c.execute("INSERT INTO customer (name) VALUES (?)", row)
+    conn.commit()
+    print "sqlite3: Total time for " + str(n) + " records " + str(time.time() - t0) + " sec"
+
+def import_2014():
+    start_time = time.time()
+    parties = { }
+    results = {}
+    presults = {}
+    with open("delims/parties.csv", 'Ur') as f:
+        parties_csv = csv.DictReader(f, delimiter=',')
+        for party in parties_csv:
+            parties[party["province_code"]] = parties.get(party["province_code"], [])
+            if (party["name"] not in parties[party["province_code"]]):
+                parties[party["province_code"]].append(party["name"])
+    with open("election_results/2014-results/nat-vds.csv", 'Ur') as f:
+        result_list = list(tuple(rec) for rec in csv.reader(f, delimiter=','))
+    with open("election_results/2014-results/nat-votes.csv", 'Ur') as f:
+        result_votes = list(tuple(rec) for rec in csv.reader(f, delimiter=','))
+    with open("election_results/2014-results/prov-vds.csv", 'Ur') as f:
+        presult_list = list(tuple(rec) for rec in csv.reader(f, delimiter=','))
+    with open("election_results/2014-results/prov-votes.csv", 'Ur') as f:
+        presult_votes = list(tuple(rec) for rec in csv.reader(f, delimiter=','))
+    print("Opened files, %g seconds" % (time.time() - start_time))
+    # print result_votes[0]
+    dbvds = db.session.query(VotingDistrict).all()
+    vd_prov = {}
+    for dbvd in dbvds:
+        vd_prov[str(dbvd.voting_district_id)] = db.session.query(Province).filter(Province.pk == dbvd.province_pk).first().province_id
+    print("Read all VDs from DB, %g seconds" % (time.time() - start_time))
+    # print vd_prov
+    for vd in result_list[1:]:
+        results[vd[0]] = empty_dict(parties["ZA"])
+        results[vd[0]]["meta"]["num_registered"] = vd[1]
+        results[vd[0]]["meta"]["vote_count"] = vd[2]
+        results[vd[0]]["meta"]["spoilt_votes"] = vd[3]
+        results[vd[0]]["meta"]["total_votes"] = vd[4]
+        results[vd[0]]["meta"]["vote_complete"] = 100
+    print("Compiled national meta, %g seconds" % (time.time() - start_time))
+    for vd in presult_list[1:]:
+        presults[vd[0]] = empty_dict(parties[vd_prov[vd[0]]])
+        presults[vd[0]]["meta"]["num_registered"] = vd[1]
+        presults[vd[0]]["meta"]["vote_count"] = vd[2]
+        presults[vd[0]]["meta"]["spoilt_votes"] = vd[3]
+        presults[vd[0]]["meta"]["total_votes"] = vd[4]
+        presults[vd[0]]["meta"]["vote_complete"] = 100
+    print("Compiled provincial meta, %g seconds" % (time.time() - start_time))
+    queued_keys = []
+    for vr in result_votes[1:]:
+        results[vr[0]]["vote_count"][vr[1]] = vr[2]
+        queued_keys.append(vr[0])
+    print("Compiled national results, %g seconds" % (time.time() - start_time))
+    for vr in presult_votes[1:]:
+        presults[vr[0]]["vote_count"][vr[1]] = vr[2]
+        queued_keys.append(vr[0])
+    print("Compiled provincial results, %g seconds" % (time.time() - start_time))
+    queued_keys = set(queued_keys)
+    print("Normalized key list, %g seconds" % (time.time() - start_time))
+    print "Queued keys: ", len(queued_keys)
+    count = 0
+    vdquery = db.session.query(VotingDistrict).filter(VotingDistrict.year == "2014").all()
+    conn = sqlite3.connect("instance/tmp.db")
+    c = conn.cursor()
+    for vd in vdquery:
+        if (str(vd.voting_district_id) in queued_keys):
+            result = results[str(vd.voting_district_id)]
+            presult = presults[str(vd.voting_district_id)]
+            c.execute("UPDATE voting_districts SET results_national = ?, results_provincial = ? WHERE pk = ?", (json.dumps(result), json.dumps(presult), vd.pk))
+            count = count + 1
+        if (count == 1000):
+            # db.session.commit()
+            conn.commit()
+            print("Saved 1000 results, %g seconds" % (time.time() - start_time))
+            count=0
+            db.session.flush()
+    db.session.commit()
+    print "Updated ", len(queued_keys), " voting districts"
+    print("Finished in %g seconds" % (time.time() - start_time))
+
+def calculate_wards():
+    start_time = time.time()
+    year = "2014"
+    wards = db.session.query(Ward).all()
+    conn = sqlite3.connect("instance/tmp.db")
+    c = conn.cursor()
+    count = 0;
+    for ward in wards:
+        count = count + 1
+        ward_pk = ward.pk
+        query = db.session.query(VotingDistrict).filter(VotingDistrict.year == int(year), VotingDistrict.ward_pk == int(ward_pk))
+        vds = query.all()
+        data_dict = {'meta': {}, 'vote_count': {}}
+        data_dict["meta"]["num_registered"] = 0
+        data_dict["meta"]["turnout_percentage"] = 0
+        data_dict["meta"]["vote_count"] = 0
+        data_dict["meta"]["spoilt_votes"] = 0
+        data_dict["meta"]["total_votes"] = 0
+        data_dict["meta"]["section_24a_votes"] = 0
+        data_dict["meta"]["special_votes"] = 0
+        data_dict["meta"]["vote_complete"] = 0
+        pdata_dict = data_dict
+        
+        tmp = []
+        # print("Calculating ward %s, %g seconds" % (ward_pk, time.time() - start_time))
+        for vd in vds:
+            data = json.loads(vd.results_national)
+            pdata = json.loads(vd.results_provincial)
+            for key in data["meta"]:
+                data_dict["meta"][key] = int(data_dict["meta"].get(key, 0)) + int(data["meta"][key])
+                if (key == "total_votes"):
+                    tmp.append(data["meta"][key])
+            for key in data["vote_count"]:
+                data_dict["vote_count"][key] = int(data_dict["vote_count"].get(key, 0)) + int(data["vote_count"][key])
+            for key in pdata["meta"]:
+                pdata_dict["meta"][key] = int(pdata_dict["meta"].get(key, 0)) + int(pdata["meta"][key])
+                if (key == "total_votes"):
+                    tmp.append(pdata["meta"][key])
+            for key in pdata["vote_count"]:
+                pdata_dict["vote_count"][key] = int(pdata_dict["vote_count"].get(key, 0)) + int(pdata["vote_count"][key])
+        
+        
+        data_dict["meta"]["vote_complete"] = 100
+        c.execute("UPDATE wards SET results_national = ?, results_provincial = ? WHERE pk = ?", (json.dumps(data_dict), json.dumps(pdata_dict), ward_pk))
+        # db.session.query(Ward).filter(Ward.pk == ward_pk).update({ 'results_national': json.dumps(data_dict), 'results_provincial': json.dumps(pdata_dict) })
+        
+        # db.session.commit()
+        db.session.flush()
+        if (count == 10):
+            conn.commit()
+            print("Computed 10 wards, %g seconds" % (time.time() - start_time))
+            count = 0
+
+
 if __name__ == "__main__":
+    
+    # clear_dbs()
 
     # 2009
     # --------------------------------------------------------------------------
-    headings, result_list = read_data('election_results/2009 NPE.csv')
-    data_dict_national = parse_data_2009(result_list, '22 APR 2009 NATIONAL ELECTION')
-    data_dict_provincial = parse_data_2009(result_list, "22 APR 2009 PROVINCIAL ELECTION")
+    # headings, result_list = read_data('election_results/2009 NPE.csv')
+    # data_dict_national = parse_data_2009(result_list, '22 APR 2009 NATIONAL ELECTION')
+    # data_dict_provincial = parse_data_2009(result_list, "22 APR 2009 PROVINCIAL ELECTION")
 
-    print "\nNational 2009"
+    # print "\nNational 2009"
     
-    print "\nProvincial 2009"
+    # print "\nProvincial 2009"
     
-    store_data_2009(data_dict_national, data_dict_provincial, 2009)
-    db.session.commit()
+    # store_data_2009(data_dict_national, data_dict_provincial, 2009)
+    # db.session.commit()
 
 
     # # # 2004
@@ -531,4 +675,6 @@ if __name__ == "__main__":
     # 2014
     # --------------------------------------------------------------------------
     print "\nPrepping for 2014"
-    prep_2014()
+    # prep_2014()
+    import_2014()
+    calculate_wards()
