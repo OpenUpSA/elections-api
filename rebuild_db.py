@@ -576,7 +576,7 @@ def import_2014():
 def calculate_wards():
     start_time = time.time()
     year = "2014"
-    wards = db.session.query(Ward).all()
+    wards = db.session.query(Ward).filter(Ward.year == "2014").all()
     conn = sqlite3.connect("instance/tmp.db")
     c = conn.cursor()
     count = 0;
@@ -594,36 +594,50 @@ def calculate_wards():
         data_dict["meta"]["section_24a_votes"] = 0
         data_dict["meta"]["special_votes"] = 0
         data_dict["meta"]["vote_complete"] = 0
-        pdata_dict = data_dict
+
+        pdata_dict = {'meta': {}, 'vote_count': {}}
+        pdata_dict["meta"]["num_registered"] = 0
+        pdata_dict["meta"]["turnout_percentage"] = 0
+        pdata_dict["meta"]["vote_count"] = 0
+        pdata_dict["meta"]["spoilt_votes"] = 0
+        pdata_dict["meta"]["total_votes"] = 0
+        pdata_dict["meta"]["section_24a_votes"] = 0
+        pdata_dict["meta"]["special_votes"] = 0
+        pdata_dict["meta"]["vote_complete"] = 0
         
-        tmp = []
         # print("Calculating ward %s, %g seconds" % (ward_pk, time.time() - start_time))
         for vd in vds:
             data = json.loads(vd.results_national)
             pdata = json.loads(vd.results_provincial)
-            for key in data["meta"]:
+            # print "nat", data["vote_count"]["AFRICAN NATIONAL CONGRESS"]
+            # print "prov", pdata["vote_count"]["AFRICAN NATIONAL CONGRESS"]
+            # National meta data
+            for key in data["meta"]: 
                 data_dict["meta"][key] = int(data_dict["meta"].get(key, 0)) + int(data["meta"][key])
-                if (key == "total_votes"):
-                    tmp.append(data["meta"][key])
+            # National votes
             for key in data["vote_count"]:
                 data_dict["vote_count"][key] = int(data_dict["vote_count"].get(key, 0)) + int(data["vote_count"][key])
+            
+            # Provincial meta data
             for key in pdata["meta"]:
                 pdata_dict["meta"][key] = int(pdata_dict["meta"].get(key, 0)) + int(pdata["meta"][key])
-                if (key == "total_votes"):
-                    tmp.append(pdata["meta"][key])
+            # Provincial votes
             for key in pdata["vote_count"]:
                 pdata_dict["vote_count"][key] = int(pdata_dict["vote_count"].get(key, 0)) + int(pdata["vote_count"][key])
-        
+
+        # print "tot nat", data_dict["vote_count"]["AFRICAN NATIONAL CONGRESS"]
+        # print "tot prov", pdata_dict["vote_count"]["AFRICAN NATIONAL CONGRESS"]
         
         data_dict["meta"]["vote_complete"] = 100
+        pdata_dict["meta"]["vote_complete"] = 100
         c.execute("UPDATE wards SET results_national = ?, results_provincial = ? WHERE pk = ?", (json.dumps(data_dict), json.dumps(pdata_dict), ward_pk))
         # db.session.query(Ward).filter(Ward.pk == ward_pk).update({ 'results_national': json.dumps(data_dict), 'results_provincial': json.dumps(pdata_dict) })
         
         # db.session.commit()
         db.session.flush()
-        if (count == 10):
+        if (count == 100):
             conn.commit()
-            print("Computed 10 wards, %g seconds" % (time.time() - start_time))
+            print("Computed 100 wards, %g seconds" % (time.time() - start_time))
             count = 0
 
 
@@ -676,5 +690,5 @@ if __name__ == "__main__":
     # --------------------------------------------------------------------------
     print "\nPrepping for 2014"
     # prep_2014()
-    import_2014()
+    #import_2014()
     calculate_wards()
