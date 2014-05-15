@@ -646,7 +646,7 @@ if __name__ == "__main__":
     clear_dbs()
 
     # 2009
-    --------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     headings, result_list = read_data('election_results/2009 NPE.csv')
     data_dict_national = parse_data_2009(result_list, '22 APR 2009 NATIONAL ELECTION')
     data_dict_provincial = parse_data_2009(result_list, "22 APR 2009 PROVINCIAL ELECTION")
