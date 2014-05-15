@@ -643,20 +643,20 @@ def calculate_wards():
 
 if __name__ == "__main__":
     
-    # clear_dbs()
+    clear_dbs()
 
     # 2009
-    # --------------------------------------------------------------------------
-    # headings, result_list = read_data('election_results/2009 NPE.csv')
-    # data_dict_national = parse_data_2009(result_list, '22 APR 2009 NATIONAL ELECTION')
-    # data_dict_provincial = parse_data_2009(result_list, "22 APR 2009 PROVINCIAL ELECTION")
+    --------------------------------------------------------------------------
+    headings, result_list = read_data('election_results/2009 NPE.csv')
+    data_dict_national = parse_data_2009(result_list, '22 APR 2009 NATIONAL ELECTION')
+    data_dict_provincial = parse_data_2009(result_list, "22 APR 2009 PROVINCIAL ELECTION")
 
-    # print "\nNational 2009"
+    print "\nNational 2009"
     
-    # print "\nProvincial 2009"
+    print "\nProvincial 2009"
     
-    # store_data_2009(data_dict_national, data_dict_provincial, 2009)
-    # db.session.commit()
+    store_data_2009(data_dict_national, data_dict_provincial, 2009)
+    db.session.commit()
 
 
     # # # 2004
@@ -689,6 +689,6 @@ if __name__ == "__main__":
     # 2014
     # --------------------------------------------------------------------------
     print "\nPrepping for 2014"
-    # prep_2014()
-    #import_2014()
+    prep_2014()
+    import_2014()
     calculate_wards()
