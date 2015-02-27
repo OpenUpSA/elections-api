@@ -1,6 +1,0 @@
-flask==0.10.1
-Flask-Admin==1.0.7
-Flask-Login==0.2.7
-Flask-SQLAlchemy==1.0
-SQLAlchemy==0.9.0
--e git+https://github.com/jdunck/python-unicodecsv.git@c5d8ae68758dd48d8a776214080caa88bc036644#egg=unicodecsv-master

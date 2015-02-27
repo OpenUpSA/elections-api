@@ -1,0 +1,15 @@
+Flask==0.10.1
+Flask-Admin==1.0.7
+Flask-Login==0.2.7
+Flask-SQLAlchemy==1.0
+Jinja2==2.7.3
+MarkupSafe==0.23
+SQLAlchemy==0.9.0
+WTForms==1.0.5
+Werkzeug==0.10.1
+gunicorn==19.2.1
+itsdangerous==0.24
+newrelic==2.44.0.36
+requests==2.5.3
+-e git+https://github.com/jdunck/python-unicodecsv.git@c5d8ae68758dd48d8a776214080caa88bc036644#egg=unicodecsv-0.9.4
+wsgiref==0.1.2

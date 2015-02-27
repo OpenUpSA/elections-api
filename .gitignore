@@ -16,3 +16,4 @@ fabdefs.py
 
 election_results/
 *tmp.db
+.DS_Store
