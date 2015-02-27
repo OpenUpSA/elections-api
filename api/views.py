@@ -1,12 +1,15 @@
-from api import app, logger, db
-from flask import jsonify, request, make_response, render_template, redirect
-from models import *
-from serializers import serialize_area
+import logging
 import json
 import time
+
+from flask import jsonify, request, make_response, render_template, redirect
 from sqlalchemy.sql import func
 
-HOST = app.config['HOST']
+from api import app, db
+from models import *
+from serializers import serialize_area
+
+logger = logging.getLogger('elections')
 
 event_types = ["provincial", "national"]
 years = [1999, 2004, 2009, 2014]
