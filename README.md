@@ -18,8 +18,6 @@ by the Independent Electoral Commission (http://www.elections.org.za/content/Ele
 
 The easiest way to use the API is to use our hosted service. Check out the [Terms of Service](#ToS) and if you're happy that you comply, have a look at our [Developers Guide](DEVELOPERS_GUIDE.md) to plug in to the data. 
 
-If you'd rather run the service on your own server, check out the [Installation documentation](INSTALLATION.md).
-
 ## What's available?
 
 The data are broadly divided into provincial and national results for each election year.
@@ -78,8 +76,55 @@ We currently have no rate limits. If, however, you're klapping our servers and w
 
 We are considering commercial offerings with higher or unlimited rates. At the moment, everything is free for as much as you can eat, so enjoy it while we still feel benevolent.
 
-## In The Wild
+## Local Development
 
-### Know Your Hood
+After cloning the project, open a terminal window and navigate to the project folder:
 
-This project includes our geospacial API, our elections API, and Google Maps API to let people see how their ward voted in the 2004 elections. [This project is published on the Mail & Guardian](http://mg.co.za/page/know-your-hood).
+    cd <project_dir>
+
+Now create a virtual environment:
+
+    virtualenv --no-site-packages env
+    source env/bin/activate
+
+Install python libraries:
+
+    pip install -r requirements.txt
+
+Run Flask dev server:
+
+    python runserver.py
+
+The API should now be running at http://localhost:5000, but it won't have any data to display. To populate
+the database, first ensure that you have sqlite3 installed on your system. Then download the raw CSV election
+result files, and unzip them in the 'election_results' directory:
+
+    cd election_results
+    wget http://www.elections.org.za/content/uploadedfiles/2009%20NPE.zip
+    unzip '2009 NPE.zip'
+    wget http://www.elections.org.za/content/uploadedfiles/2004%20NPE.zip
+    unzip '2004 NPE.zip'
+    wget http://www.elections.org.za/content/uploadedfiles/1999%20NPE.zip
+    unzip '1999 NPE.zip'
+
+Now, build the database with:
+
+    cd ..
+    python rebuild_db.py
+
+# Production Deployment
+
+This runs on Heroku.
+
+You will need:
+
+* a New Relic license key
+* a random Flask secret key
+
+    heroku create
+    heroku addons:add newrelic:stark
+    heroku config:set NEW_RELIC_APP_NAME="Elections API" \
+                      NEW_RELIC_LICENSE_KEY=some-license-key \
+                      FLASK_ENV=production \
+                      FLASK_SECRET_KEY=some-secret-key
+    git push heroku master
