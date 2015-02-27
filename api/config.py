@@ -10,7 +10,7 @@ if DEBUG:
 else:
     SECRET_KEY = os.environ['FLASK_SECRET_KEY']
 
-SQLALCHEMY_DATABASE_URI = 'sqlite:///../instance/tmp.db'
+SQLALCHEMY_DATABASE_URI = 'sqlite:///data/elections.sqlite'
 
 logging.config.dictConfig({
     'version': 1,
