@@ -31,6 +31,7 @@ class ApiException(Exception):
         }
         return rv
 
+
 @app.errorhandler(ApiException)
 def handle_api_exception(error):
     """
@@ -54,7 +55,7 @@ def validate_event_type(event_type):
 
     event_type = event_type.lower()
     tmp = ", ".join(event_types)
-    if not event_type in event_types:
+    if event_type not in event_types:
         raise ApiException(422, "Incorrect event_type specified. Please use one of: " + tmp + ".")
     return event_type
 
@@ -62,7 +63,7 @@ def validate_event_type(event_type):
 def validate_year(year):
 
     tmp = ", ".join(str(x) for x in years)
-    if not year in years:
+    if year not in years:
         raise ApiException(422, "Incorrect year specified. Please use one of: " + tmp + ".")
     return year
 
@@ -71,7 +72,7 @@ def validate_area(area):
 
     area = area.lower()
     tmp = ", ".join(areas)
-    if not area in areas:
+    if area not in areas:
         raise ApiException(422, "Incorrect area specified. Please use one of: " + tmp + ".")
     return area
 
@@ -111,7 +112,7 @@ def results_overall(event_type, year):
     year = validate_year(year)
     out = {}
 
-    item = Country.query.filter(Country.year==year).first()
+    item = Country.query.filter(Country.year == year).first()
     out['results'] = serialize_area(item, event_type)['results']
 
     for area in areas:
@@ -153,7 +154,7 @@ def results_by_area(event_type, year, area, area_id=None):
             page = int(request.args.get('page'))
         except ValueError:
             raise ApiException(422, "Please specify a valid 'page'.")
-    
+
     all_results = False
     if request.args.get('all_results'):
         all_results = True
@@ -187,23 +188,23 @@ def results_by_area(event_type, year, area, area_id=None):
         if filter_area and filter_id:
             logger.debug("filtering: " + filter_area + " - " + filter_id)
             # retrieve the entity that will be filtered on
-            obj = models[filter_area][0].query.filter(models[filter_area][0].year==year, models[filter_area][1]==filter_id).first()
+            obj = models[filter_area][0].query.filter(models[filter_area][0].year == year, models[filter_area][1] == filter_id).first()
             if obj is None:
                 raise ApiException(404, "Could not find the specified filter. Check that you have provided a valid ID, or remove the filter.")
-            count = models[area][0].query.filter(models[area][0].year==year).filter(model_filters[area][filter_area]==obj).count()
+            count = models[area][0].query.filter(models[area][0].year == year).filter(model_filters[area][filter_area] == obj).count()
             if (all_results):
-                items = models[area][0].query.filter(models[area][0].year==year).filter(model_filters[area][filter_area]==obj).order_by(models[area][1]).all()
+                items = models[area][0].query.filter(models[area][0].year == year).filter(model_filters[area][filter_area] == obj).order_by(models[area][1]).all()
             else:
-                items = models[area][0].query.filter(models[area][0].year==year).filter(model_filters[area][filter_area]==obj).order_by(models[area][1]).limit(per_page).offset(page*per_page).all()
+                items = models[area][0].query.filter(models[area][0].year == year).filter(model_filters[area][filter_area] == obj).order_by(models[area][1]).limit(per_page).offset(page * per_page).all()
         else:
-            count = models[area][0].query.filter(models[area][0].year==year).count()
+            count = models[area][0].query.filter(models[area][0].year == year).count()
             if (all_results):
-                items = models[area][0].query.filter(models[area][0].year==year).order_by(models[area][1]).all()
+                items = models[area][0].query.filter(models[area][0].year == year).order_by(models[area][1]).all()
             else:
-                items = models[area][0].query.filter(models[area][0].year==year).order_by(models[area][1]).limit(per_page).offset(page*per_page).all()
+                items = models[area][0].query.filter(models[area][0].year == year).order_by(models[area][1]).limit(per_page).offset(page * per_page).all()
         next = None
         if count > (page + 1) * per_page:
-            next = request.url_root + event_type + "/" + str(year) + "/" + area + "/?page=" + str(page+1)
+            next = request.url_root + event_type + "/" + str(year) + "/" + area + "/?page=" + str(page + 1)
         results = []
         for item in items:
             results.append(serialize_area(item, event_type))
