@@ -1,12 +1,10 @@
 import logging
-import json
-import time
 
-from flask import jsonify, request, make_response, render_template, redirect
-from sqlalchemy.sql import func
+import newrelic.agent
+from flask import jsonify, request
 
-from api import app, db
-from models import *
+from api import app
+from models import *  # noqa
 from serializers import serialize_area
 
 logger = logging.getLogger('elections')
@@ -217,3 +215,9 @@ def results_by_area(event_type, year, area, area_id=None):
             'results': results
         }
     return send_api_response(out)
+
+
+@app.route("/ping")
+def ping():
+    newrelic.agent.ignore_transaction()
+    return "pong"
