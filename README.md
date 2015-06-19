@@ -127,7 +127,8 @@ dokku config:set election-api NEW_RELIC_APP_NAME="Elections API" \
                               NEW_RELIC_LICENSE_KEY=some-license-key \
                               FLASK_ENV=production \
                               FLASK_SECRET_KEY=some-secret-key
-
+```
+```bash
 git remote add dokku dokku@dokku.code4sa.org:election-api
 git push dokku master
 ```
