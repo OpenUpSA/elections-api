@@ -114,17 +114,8 @@ Now, build the database with:
 
 # Production Deployment
 
-This runs on Heroku.
-
-You will need:
-
-* a New Relic license key
-* a random Flask secret key
-
-    heroku create
-    heroku addons:add newrelic:stark
-    heroku config:set NEW_RELIC_APP_NAME="Elections API" \
-                      NEW_RELIC_LICENSE_KEY=some-license-key \
-                      FLASK_ENV=production \
-                      FLASK_SECRET_KEY=some-secret-key
-    git push heroku master
+This app runs on Dokku and is compitable with Heroku. To deploy:
+```bash
+git remote add dokku dokku@dokku.code4sa.org:election-api
+git push dokku master
+```
